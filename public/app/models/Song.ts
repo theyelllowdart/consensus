@@ -1,0 +1,19 @@
+module consensus {
+  export enum Source{
+    SOUND_CLOUD,
+    YOUTUBE,
+    SPOTIFY
+  }
+
+  export class Song {
+    public constructor(public id:string,
+                       public url:string,
+                       public duration:number,
+                       public source:Source,
+                       public name:string,
+                       public upvotes?:Array<string>,
+                       public downvotes?:Array<string>,
+                       public start?:number) {
+    }
+  }
+}

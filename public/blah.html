@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="consensus" data-framework="typescript">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="js/output.js" defer></script>
+  <script src="//www.youtube.com/iframe_api" defer></script>
+
+  <link rel="icon" href="favicon.ico"/>
+  <link rel="stylesheet" type="text/css" href="css/output.css">
+</head>
+<body class="ng-cloak container-fluid" hidden>
+
+<div ng-controller="QueueController as queueCtrl">
+  <div class="row">
+    <div class="col-xs-12">
+      <label class="checkbox-inline">
+        <input type="checkbox" ng-model="queueCtrl.state.listening" ng-change="queueCtrl.listen()"> Listen
+      </label>
+
+      <div class="btn-group" ng-controller="QuickController as quickCtrl">
+        <button type="button" class="btn btn-default" ng-click="quickCtrl.soundCloudQuickAdd()">SoundCloud</button>
+        <button type="button" class="btn btn-default" ng-click="quickCtrl.youtubeQuickAdd()">YouTube</button>
+        <button type="button" class="btn btn-default" ng-click="quickCtrl.spotifyQuickAdd()">Spotify</button>
+      </div>
+
+      <button class="btn btn-default" type="submit" ng-click="queueCtrl.clear()">Clear</button>
+      <button class="btn btn-default" type="submit" ng-click="queueCtrl.status()">Status</button>
+    </div>
+  </div>
+
+  <div class="row" style="padding: 10px 0;white-space: nowrap;overflow-y: scroll;min-height: 150px;">
+    <div ng-repeat="song in queueCtrl.queue" style="display: inline-block">
+      <div class="col-xs-3" style="height: 100px;">
+        <div hidden>{{song.id}}</div>
+        <div hidden>{{song.url}}</div>
+        <div ng-switch="song.source">
+          <span ng-switch-when="0">SoundCloud</span>
+          <span ng-switch-when="1">YouTube</span>
+          <span ng-switch-when="2">Spotify</span>
+        </div>
+        <div>{{song.name}}</div>
+        <div>{{song.creator}}</div>
+        <button type="button"
+                class="btn btn-default"
+                ng-click="queueCtrl.upvote(song.id)"
+                bs-tooltip
+                data-title="wtf"
+                data-container="body"
+                data-content-template="upvotes.html">
+          upvote
+          <span class="badge">{{song.upvotes.length}}</span>
+        </button>
+        <button type="button"
+                class="btn btn-default"
+                ng-click="queueCtrl.downvote(song.id)">
+          downvote
+          <span class="badge">{{song.downvotes.length}}</span>
+        </button>
+        <div ng-show="$first">
+          progress: {{queueCtrl.playState.progress}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div ng-controller="SearchController as searchCtrl">
+
+  <div class="row">
+    <div class="col-xs-12">
+      <form>
+        <label for="search"> Search</label> {{searchCtrl.search()}}
+        <input type="text"
+               class="form-control"
+               id="search"
+               ng-model="searchCtrl.search"
+               ng-model-options="{getterSetter: true, updateOn: 'default', debounce: {'default': 200}}"/>
+      </form>
+    </div>
+  </div>
+
+  <div id="results" class="row">
+
+    <div id="soundcloud-results" class="col-xs-4">
+      <blockquote>SoundCloud</blockquote>
+      <div ng-repeat="result in searchCtrl.soundCloudResults" class="row">
+        <div class="col-xs-12" ng-click="searchCtrl.enqueueSC(result)">
+          {{result.title}}
+        </div>
+      </div>
+    </div>
+
+    <div id="youtube-results" class="col-xs-4">
+      <blockquote>Youtube</blockquote>
+      <div ng-repeat="result in searchCtrl.youtubeResults" class="row">
+        <div class="col-xs-12" ng-click="searchCtrl.enqueueYT(result)">
+          {{result.snippet.title}}
+        </div>
+      </div>
+    </div>
+
+    <div id="spotify-results" class="col-xs-4">
+      <blockquote>Spotify</blockquote>
+      <div ng-repeat="result in searchCtrl.spotifyResults" class="row">
+        <div class="col-xs-12" ng-click="searchCtrl.enqueueSpotify(result)">
+          {{result.artists[0].name}} - {{result.name}}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script type="text/ng-template" id="upvotes.html">
+  <div ng-repeat="upvote in song.upvotes">
+    <div>{{upvote}}</div>
+  </div>
+</script>
+<script type="text/ng-template" id="downvotes.html">
+  <div ng-repeat="downvote in song.downvotes">
+    <div>{{downvote}}</div>
+  </div>
+</script>
+
+<iframe id="spotify-player" src="#" hidden></iframe>
+<div hidden>
+  <div id="player"></div>
+</div>
+
+</body>
+</html>

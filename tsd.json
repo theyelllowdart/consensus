@@ -1,0 +1,36 @@
+{
+  "version": "v4",
+  "repo": "theyelllowdart/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "jquery/jquery.d.ts": {
+      "commit": "be0b6b394f77a59e192ad7cfec18078706e44db5"
+    },
+    "angularjs/angular.d.ts": {
+      "commit": "be0b6b394f77a59e192ad7cfec18078706e44db5"
+    },
+    "lodash/lodash.d.ts": {
+      "commit": "be0b6b394f77a59e192ad7cfec18078706e44db5"
+    },
+    "socket.io-client/socket.io-client.d.ts": {
+      "commit": "be0b6b394f77a59e192ad7cfec18078706e44db5"
+    },
+    "youtube/youtube.d.ts": {
+      "commit": "3f4a36cbdce84b0fa086000b4541d8b7e55304a1"
+    },
+    "gapi.youtube/gapi.youtube.d.ts": {
+      "commit": "be0b6b394f77a59e192ad7cfec18078706e44db5"
+    },
+    "gapi/gapi.d.ts": {
+      "commit": "be0b6b394f77a59e192ad7cfec18078706e44db5"
+    },
+    "spotify/spotify.d.ts": {
+      "commit": "5b9b17b5855bf383c9277f934b4f4b001fbb0a57"
+    },
+    "soundcloud/soundcloud.d.ts": {
+      "commit": "5b9b17b5855bf383c9277f934b4f4b001fbb0a57"
+    }
+  }
+}

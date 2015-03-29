@@ -1,0 +1,12 @@
+.idea
+*.iml
+
+.env
+node_modules
+bower_components
+typings
+public/app/**/*.js
+public/app/**/*.js.map
+
+public/js/output.js
+public/css/output.css

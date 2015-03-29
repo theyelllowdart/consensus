@@ -1,0 +1,66 @@
+var gulp = require('gulp');
+var bowerFiles = require('bower-files');
+var concat = require('gulp-concat');
+var gulpIf = require('gulp-if');
+var minifyCSS = require('gulp-minify-css');
+var sourceMaps = require('gulp-sourcemaps');
+var ts = require('gulp-typescript');
+var uglify = require('gulp-uglify');
+var StreamQueue = require('streamqueue');
+var argv = require('yargs').argv;
+var tsd = require('gulp-tsd');
+
+
+var projectBowerFiles = bowerFiles({
+  overrides: {
+    SoundManager2: {
+      main: './script/soundmanager2.js'
+    },
+    'socket.io-client': {
+      main: 'socket.io.js'
+    },
+    'soundcloud-javascript': {
+      main: './releases/sdk.js'
+    },
+    'bootstrap-css-only': {
+      main: ['./css/bootstrap.css', './css/bootstrap-theme.css']
+    }
+  }
+});
+
+gulp.task('tsd', function (callback) {
+  return tsd({
+    command: 'reinstall',
+    config: './tsd.json'
+  }, callback);
+});
+
+gulp.task('scripts', ['tsd'], function () {
+  var bower = gulp
+    .src(projectBowerFiles.ext('js').files)
+    .pipe(gulpIf(!argv.production, sourceMaps.init()))
+    .pipe(gulpIf(argv.production, uglify()));
+
+  var typeScript = gulp.src('public/app/**/*.ts')
+    .pipe(gulpIf(!argv.production, sourceMaps.init()))
+    .pipe(ts({sortOutput: true}))
+    .pipe(gulpIf(argv.production, uglify()));
+
+  var stream = new StreamQueue({objectMode: true});
+  stream.queue(bower);
+  stream.queue(typeScript);
+
+  return stream.done()
+    .pipe(concat('output.js'))
+    .pipe(gulpIf(!argv.production, sourceMaps.write()))
+    .pipe(gulp.dest('public/js'));
+});
+
+gulp.task('css', function () {
+  return gulp.src(projectBowerFiles.ext('css').files)
+    .pipe(gulpIf(!argv.production, sourceMaps.init()))
+    .pipe(concat('output.css'))
+    .pipe(gulpIf(argv.production, minifyCSS()))
+    .pipe(gulpIf(!argv.production, sourceMaps.write()))
+    .pipe(gulp.dest('public/css'));
+});

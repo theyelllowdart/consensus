@@ -10,12 +10,13 @@ module consensus {
         params: {
           limit: 20,
           type: 'track',
+          market: 'US',
           q: query
         }
       };
       return this.$http.get('https://api.spotify.com/v1/search', spotifyOpts)
         .then((response:angular.IHttpPromiseCallbackArg<spotify.TrackSearchResult>) => {
-          return _.filter(response.data.tracks.items, (track) => _.contains(track.available_markets, 'US'));
+          return response.data.tracks.items;
         });
     }
   }

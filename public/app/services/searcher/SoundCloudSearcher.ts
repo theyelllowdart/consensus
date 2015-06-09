@@ -10,6 +10,7 @@ module consensus {
         params: {
           client_id: this.soundcloudConfig.clientId,
           limit: this.soundcloudConfig.limit,
+          filter: 'streamable',
           q: query
         }
       };

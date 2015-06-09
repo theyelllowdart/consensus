@@ -53,14 +53,21 @@ gulp.task('scripts', ['tsd'], function () {
   return stream.done()
     .pipe(concat('output.js'))
     .pipe(gulpIf(!argv.production, sourceMaps.write()))
-    .pipe(gulp.dest('public/js'));
+    .pipe(gulp.dest('public'));
 });
 
 gulp.task('css', function () {
-  return gulp.src(projectBowerFiles.ext('css').files)
+  var bower = gulp.src(projectBowerFiles.ext('css').files);
+  var css = gulp.src('public/css/*.css');
+
+  var stream = new StreamQueue({objectMode: true});
+  stream.queue(bower);
+  stream.queue(css);
+
+  return stream.done()
     .pipe(gulpIf(!argv.production, sourceMaps.init()))
     .pipe(concat('output.css'))
     .pipe(gulpIf(argv.production, minifyCSS()))
     .pipe(gulpIf(!argv.production, sourceMaps.write()))
-    .pipe(gulp.dest('public/css'));
+    .pipe(gulp.dest('public'));
 });

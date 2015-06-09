@@ -53,7 +53,7 @@ gulp.task('scripts', ['tsd'], function () {
   return stream.done()
     .pipe(concat('output.js'))
     .pipe(gulpIf(!argv.production, sourceMaps.write()))
-    .pipe(gulp.dest('public'));
+    .pipe(gulp.dest('public/generated'));
 });
 
 gulp.task('css', function () {
@@ -69,5 +69,5 @@ gulp.task('css', function () {
     .pipe(concat('output.css'))
     .pipe(gulpIf(argv.production, minifyCSS()))
     .pipe(gulpIf(!argv.production, sourceMaps.write()))
-    .pipe(gulp.dest('public'));
+    .pipe(gulp.dest('public/generated'));
 });

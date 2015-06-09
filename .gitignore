@@ -8,5 +8,5 @@ typings
 public/app/**/*.js
 public/app/**/*.js.map
 
-public/output.js
-public/output.css
+public/generated/output.js
+public/generated/output.css

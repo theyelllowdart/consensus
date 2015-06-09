@@ -82,8 +82,7 @@
         <div ng-repeat="result in searchCtrl.soundCloudResults" class="row search-result">
           <div class="col-xs-12" ng-click="searchCtrl.enqueueSC(result)">
             <img ng-src="{{result.artwork_url || result.user.avatar_url}}" class="search-result-image"/>
-
-            <div>{{result.user.username}}</div>
+            <div class="deemphasize">{{result.user.username}}</div>
             <div>{{result.title}}</div>
             <div>{{result.duration | humanizeDuration}}</div>
             <div><a href="{{result.permalink_url}}" target="_blank" ng-click="$event.stopPropagation();">link</a></div>
@@ -96,7 +95,7 @@
         <div ng-repeat="result in searchCtrl.youtubeResults" class="row search-result">
           <div class="col-xs-12" ng-click="searchCtrl.enqueueYT(result)">
             <img ng-src="{{result.snippet.thumbnails.default.url}}" class="search-result-image"/>
-            <div>{{result.snippet.channelTitle}}</div>
+            <div class="deemphasize">{{result.snippet.channelTitle}}</div>
             <div>{{result.snippet.title}}</div>
             <div><a href="//youtube.com/watch?v={{result.id.videoId}}" target="_blank" ng-click="$event.stopPropagation();">link</a></div>
           </div>
@@ -108,7 +107,7 @@
         <div ng-repeat="result in searchCtrl.spotifyResults" class="row search-result">
           <div class="col-xs-12" ng-click="searchCtrl.enqueueSpotify(result)">
             <img ng-src="{{result.album.images[1].url}}" class="search-result-image"/>
-            <div>{{result.album.name}}</div>
+            <div class="deemphasize">{{result.album.name}}</div>
             <div>{{result.artists[0].name}} - {{result.name}}</div>
             <div>{{result.duration_ms | humanizeDuration}}</div>
             <div><a href="{{result.external_urls.spotify}}" target="_blank" ng-click="$event.stopPropagation();">link</a></div>

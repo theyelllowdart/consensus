@@ -56,22 +56,13 @@ module consensus {
       };
       this.$http.get('https://www.googleapis.com/youtube/v3/videos', youtubeOpts)
         .success((response:any) => {
-          // https://developers.google.com/youtube/v3/docs/videos contentDetails.duration -> PT#M#S
-          var timeSegments = response.items[0].contentDetails.duration;
-          //stolen from http://stackoverflow.com/questions/22148885/converting-youtube-data-api-v3-video-duration-format-to-seconds-in-javascript-no
-          var duration = 0;
-          var hours = timeSegments.match(/(\d+)H/);
-          var minutes = timeSegments.match(/(\d+)M/);
-          var seconds = timeSegments.match(/(\d+)S/);
-          if (hours) duration += hours[1] * 3600;
-          if (minutes) duration += minutes[1] * 60;
-          if (seconds) duration += seconds[1] * 1;
-          duration = duration * 1000;
+          var duration = response.items[0].contentDetails.duration;
+          var durationMillis = moment.duration(duration).asMilliseconds();
           this.connectedSocket.then((socket) => {
             var newSong = new Song(
               this.uuidGenerator.generate(),
               resource.id.videoId,
-              duration,
+              durationMillis,
               Source.YOUTUBE,
               resource.snippet.title
             );

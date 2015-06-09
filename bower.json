@@ -22,6 +22,7 @@
     "SoundManager2": "scottschiller/SoundManager2#d62192577d7627e94ddaf8d9ede0b837ceda87b4",
     "soundcloud-javascript": "soundcloud/soundcloud-javascript#a1da58a8b7cf3e50dc62ee280635825777413e5d",
     "socket.io-client": "~1.3.5",
-    "GoTime": "theyelllowdart/GoTime#9615fc16fb5605d6cb9a46d36468610df8fbe0d4"
+    "GoTime": "theyelllowdart/GoTime#9615fc16fb5605d6cb9a46d36468610df8fbe0d4",
+    "moment": "~2.10.3"
   }
 }

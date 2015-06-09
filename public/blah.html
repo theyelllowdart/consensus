@@ -98,8 +98,10 @@
     <div id="soundcloud-results" class="col-xs-4">
       <blockquote>SoundCloud</blockquote>
       <div ng-repeat="result in searchCtrl.soundCloudResults" class="row">
-        <div class="col-xs-12" ng-click="searchCtrl.enqueueSC(result)">
-          {{result.title}}
+        <div class="col-xs-12" ng-click="searchCtrl.enqueueSC(result)" style="margin-bottom: 5px; cursor: pointer;">
+          <img src="{{result.artwork_url}}" style="float: left; margin-right: 5px;"/>
+          <div>{{result.user.username}}</div>
+          <div>{{result.title}}</div>
         </div>
       </div>
     </div>

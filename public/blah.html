@@ -19,14 +19,6 @@
         <input type="checkbox" ng-model="queueCtrl.state.listening" ng-change="queueCtrl.listen()"> Listen
       </label>
 
-      <div class="btn-group" ng-controller="QuickController as quickCtrl">
-        <button type="button" class="btn btn-default" ng-click="quickCtrl.soundCloudQuickAdd()">SoundCloud</button>
-        <button type="button" class="btn btn-default" ng-click="quickCtrl.youtubeQuickAdd()">YouTube</button>
-        <button type="button" class="btn btn-default" ng-click="quickCtrl.spotifyQuickAdd()">Spotify</button>
-      </div>
-
-      <button class="btn btn-default" type="submit" ng-click="queueCtrl.clear()">Clear</button>
-      <button class="btn btn-default" type="submit" ng-click="queueCtrl.status()">Status</button>
       <span>
         For Spotify playback support install the
         <a href="//chrome.google.com/webstore/detail/spotify-remote/boidmjchelicgoeabcpblhboklbillbi">

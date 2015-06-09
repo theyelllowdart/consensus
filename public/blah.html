@@ -102,7 +102,7 @@
           <img src="{{result.artwork_url || result.user.avatar_url}}" style="float: left; margin-right: 5px;"/>
           <div>{{result.user.username}}</div>
           <div>{{result.title}}</div>
-          <div>{{result.duration/1000}}</div>
+          <div>{{result.duration | humanizeDuration}}</div>
           <div><a href="{{result.permalink_url}}" target="_blank">link</a></div>
         </div>
       </div>
@@ -127,8 +127,8 @@
           <img src="{{result.album.images[1].url}}" style="float: left; margin-right: 5px;" height="100"/>
           <div>{{result.album.name}}</div>
           <div>{{result.artists[0].name}} - {{result.name}}</div>
+          <div>{{result.duration_ms | humanizeDuration}}</div>
           <div><a href="{{result.external_urls.spotify}}" target="_blank">link</a></div>
-          <div>{{result.duration_ms / 1000}}</div>
         </div>
       </div>
     </div>

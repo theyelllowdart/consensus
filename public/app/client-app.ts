@@ -74,4 +74,6 @@ module consensus {
     .controller('SearchController', SearchController)
     .controller('QueueController', QueueController)
     .controller('QuickController', QuickController)
+
+    .filter('humanizeDuration', () => (input) => moment.duration(input)['format']('h:mm:ss'))
 }

@@ -99,9 +99,11 @@
       <blockquote>SoundCloud</blockquote>
       <div ng-repeat="result in searchCtrl.soundCloudResults" class="row">
         <div class="col-xs-12" ng-click="searchCtrl.enqueueSC(result)" style="margin-bottom: 5px; cursor: pointer;">
-          <img src="{{result.artwork_url}}" style="float: left; margin-right: 5px;"/>
+          <img src="{{result.artwork_url || result.user.avatar_url}}" style="float: left; margin-right: 5px;"/>
           <div>{{result.user.username}}</div>
           <div>{{result.title}}</div>
+          <div>{{result.duration/1000}}</div>
+          <div><a href="{{result.permalink_url}}" target="_blank">link</a></div>
         </div>
       </div>
     </div>
@@ -109,8 +111,11 @@
     <div id="youtube-results" class="col-xs-4">
       <blockquote>Youtube</blockquote>
       <div ng-repeat="result in searchCtrl.youtubeResults" class="row">
-        <div class="col-xs-12" ng-click="searchCtrl.enqueueYT(result)">
-          {{result.snippet.title}}
+        <div class="col-xs-12" ng-click="searchCtrl.enqueueYT(result)" style="min-height: 100px; margin-bottom: 5px; cursor: pointer;">
+          <img src="{{result.snippet.thumbnails.default.url}}" style="float: left; margin-right: 5px;" height="100"/>
+          <div>{{result.snippet.channelTitle}}</div>
+          <div>{{result.snippet.title}}</div>
+          <div><a href="//youtube.com/watch?v={{result.id.videoId}}" target="_blank">link</a></div>
         </div>
       </div>
     </div>
@@ -118,8 +123,12 @@
     <div id="spotify-results" class="col-xs-4">
       <blockquote>Spotify</blockquote>
       <div ng-repeat="result in searchCtrl.spotifyResults" class="row">
-        <div class="col-xs-12" ng-click="searchCtrl.enqueueSpotify(result)">
-          {{result.artists[0].name}} - {{result.name}}
+        <div class="col-xs-12" ng-click="searchCtrl.enqueueSpotify(result)" style="min-height: 100px; margin-bottom: 5px; cursor: pointer;">
+          <img src="{{result.album.images[1].url}}" style="float: left; margin-right: 5px;" height="100"/>
+          <div>{{result.album.name}}</div>
+          <div>{{result.artists[0].name}} - {{result.name}}</div>
+          <div><a href="{{result.external_urls.spotify}}" target="_blank">link</a></div>
+          <div>{{result.duration_ms / 1000}}</div>
         </div>
       </div>
     </div>

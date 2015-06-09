@@ -17,7 +17,7 @@ module consensus {
 
       return this.$http.get('https://api.soundcloud.com/tracks', soundCloudOpts)
         .then((response:angular.IHttpPromiseCallbackArg<Array<soundcloud.Track>>) => {
-          return _.filter(response.data, (track) => track.streamable);
+          return _.filter(response.data, (track) => track && track.stream_url);
         });
     }
   }

@@ -104,6 +104,7 @@ io.on('connection', function (socket) {
   });
   socket.on('enqueue', function (song) {
     song.creator = userEmail;
+    song.scheduled = new Date();
     song.downvotes = [];
     song.upvotes = [socket.request.user.emails[0].value];
     songQueue.push(song);
@@ -116,8 +117,9 @@ io.on('connection', function (socket) {
         return console.error('error fetching client from pool', err);
       }
       client.query(
-        'INSERT into Song (id, creator, url, duration, source, name, upvotes, downvotes, start) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-        [song.id, song.creator, song.url, song.duration, song.source, song.name, song.upvotes, song.downvotes, song.start],
+        'INSERT into Song (id, creator, url, duration, source, name, upvotes, downvotes, start, scheduled) ' +
+        'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
+        [song.id, song.creator, song.url, song.duration, song.source, song.name, song.upvotes, song.downvotes, song.start, song.scheduled],
         function (err) {
           done();
           if (err) {
@@ -200,7 +202,7 @@ app.get('/history', function (req, res) {
     if (err) {
       return console.error('error fetching client from pool', err);
     }
-    client.query('SELECT * FROM SONG ORDER BY start desc LIMIT 100', function (err, result) {
+    client.query('SELECT * FROM SONG ORDER BY scheduled desc LIMIT 100', function (err, result) {
       done();
       if (err) {
         return console.error('error running query', err);

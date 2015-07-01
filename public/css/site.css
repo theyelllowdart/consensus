@@ -3,16 +3,19 @@ html {
   position: relative;
 }
 
-body {
-  margin-bottom: 20px;
+html, body, .container-fluid {
+  height: 100%;
 }
 
-.footer {
-  background-color: #f5f5f5;
-  bottom: 0;
-  height: 20px;
-  position: absolute;
-  width: 100%;
+.row-eq-height {
+  display: table;
+  height: 100%;
+}
+
+.row-eq-height > [class*="col-"] {
+  float: none;
+  display: table-cell;
+  vertical-align: top;
 }
 
 .search-result {
@@ -29,10 +32,7 @@ body {
 }
 
 #queue {
-  min-height: 150px;
-  overflow-y: scroll;
-  padding: 10px 0;
-  white-space: nowrap;
+  background-color: WhiteSmoke;
 }
 
 .deemphasize {

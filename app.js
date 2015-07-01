@@ -7,6 +7,16 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var util = require('util');
 var _ = require('lodash');
+var postgres = require('pg');
+
+var databaseURL = process.env.DATABASE_URL;
+postgres.connect(databaseURL, function (err, client, done) {
+  if (err) {
+    return console.error('error fetching client from pool', err);
+  }
+  done();
+  console.log('connected to database');
+});
 
 //----------SECURITY---------------
 var secret = process.env.COOKIE_SECRET;
@@ -101,6 +111,20 @@ io.on('connection', function (socket) {
       console.log('adding to song to empty queue ' + util.inspect(song));
       startSong(io, songQueue[0])
     }
+    postgres.connect(databaseURL, function (err, client, done) {
+      if (err) {
+        return console.error('error fetching client from pool', err);
+      }
+      client.query(
+        'INSERT into Song (id, creator, url, duration, source, name, upvotes, downvotes, start) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+        [song.id, song.creator, song.url, song.duration, song.source, song.name, song.upvotes, song.downvotes, song.start],
+        function (err) {
+          done();
+          if (err) {
+            return console.error('error running query', err);
+          }
+        });
+    });
     io.emit('queueChange', songQueue);
   });
   socket.on('upvote', function (id) {
@@ -169,6 +193,21 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/blah.html'));
   else
     res.redirect('/auth/provider')
+});
+
+app.get('/history', function (req, res) {
+  postgres.connect(databaseURL, function (err, client, done) {
+    if (err) {
+      return console.error('error fetching client from pool', err);
+    }
+    client.query('SELECT * FROM SONG ORDER BY start desc LIMIT 100', function (err, result) {
+      done();
+      if (err) {
+        return console.error('error running query', err);
+      }
+      res.json(result.rows);
+    });
+  });
 });
 
 app.set('port', (process.env.PORT || 8080));

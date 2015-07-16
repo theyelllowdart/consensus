@@ -15,7 +15,6 @@ postgres.connect(databaseURL, function (err, client, done) {
     return console.error('error fetching client from pool', err);
   }
   done();
-  console.log('connected to database');
 });
 
 //----------SECURITY---------------
@@ -23,6 +22,7 @@ var secret = process.env.COOKIE_SECRET;
 var passport = require('passport');
 var passportSocketIo = require("passport.socketio");
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 var session = require('express-session');
 var sessionStore = new session.MemoryStore();
 app.use(session({store: sessionStore, secret: secret, saveUninitialized: false, resave: true}));
@@ -36,15 +36,12 @@ io.use(passportSocketIo.authorize({
   secret: secret,
   store: sessionStore,
   success: function onAuthorizeSuccess(data, accept) {
-    console.log('successful connection to socket.io');
     accept();
   },
   fail: function onAuthorizeFail(data, message, error, accept) {
-    if (error)
-      throw new Error(message);
-    console.log('failed connection to socket.io:', message);
-    if (error)
+    if(error) {
       accept(new Error(message));
+    }
   }
 }));
 
@@ -62,21 +59,30 @@ passport.use(new GoogleStrategy({
     callbackURL: process.env.CALLBACKURL
   },
   function (accessToken, refreshToken, profile, done) {
-    console.log("passported");
-    console.log(profile);
-    return done(null, profile);
+    return done(null, profile.emails[0].value);
   }
 ));
 
-app.get('/login/failed', function () {
-  console.log("login");
-});
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'email',
+    passReqToCallback: true,
+    session: false
+  },
+  function(req, username, password, done) {
+    if (process.env.MODE === "DEV"){
+      done(null, username);
+    } else {
+      done("Local strategy authentication has been disabled from non DEV modes.")
+    }
+  }
+));
 
 app.get('/auth/provider', passport.authenticate('google', {scope: 'email'}));
 
 app.get('/oauth2callback',
   passport.authenticate('google', {
-    failureRedirect: '/login',
+    failureRedirect: '/',
     successRedirect: '/'
   })
 );
@@ -88,17 +94,16 @@ var songQueue = [];
 var delaySongDuration = 1000;
 
 io.on('connection', function (socket) {
-  var userEmail = socket.request.user.emails[0].value;
-  console.log('a user connected');
+  var userEmail = socket.request.user;
+  console.log('user ' + userEmail + ' connected');
   socket.on('disconnect', function () {
-    console.log('user disconnected');
+    console.log('user ' + userEmail + ' disconnected');
   });
   socket.on('time', function (data) {
     data.serverTime = Date.now();
     socket.emit("time", data)
   });
   socket.on('clear', function () {
-    console.log('clear queue');
     songQueue = [];
     io.emit('queueChange', songQueue);
   });
@@ -106,10 +111,9 @@ io.on('connection', function (socket) {
     song.creator = userEmail;
     song.scheduled = new Date();
     song.downvotes = [];
-    song.upvotes = [socket.request.user.emails[0].value];
+    song.upvotes = [userEmail];
     songQueue.push(song);
     if (songQueue.length === 1) {
-      console.log('adding to song to empty queue ' + util.inspect(song));
       startSong(io, songQueue[0])
     }
     postgres.connect(databaseURL, function (err, client, done) {
@@ -177,7 +181,6 @@ function startSong(io, song) {
     setTimeout(function () {
       // guard for case if downvoting removes song
       if (songQueue.length > 0 && songQueue[0].id === song.id) {
-        console.log('endSong ' + util.inspect(song));
         songQueue.shift();
         if (songQueue.length > 0) {
           startSong(io, songQueue[0])
@@ -190,11 +193,19 @@ function startSong(io, song) {
   endSongTimeoutFn(io, song);
 }
 
+
+app.get('/localAuth',
+  passport.authenticate('local', { failureRedirect: '/' }),
+  function(req, res) {
+    res.redirect('/');
+  }
+);
+
 app.get('/', function (req, res) {
-  if (req.user)
+  if (req .user)
     res.sendFile(path.join(__dirname + '/public/blah.html'));
   else
-    res.redirect('/auth/provider')
+      res.redirect('/auth/provider')
 });
 
 app.get('/history', function (req, res) {

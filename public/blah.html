@@ -17,7 +17,7 @@
 <div class="container-fluid">
   <div class="row row-eq-height">
 
-    <div class="col-xs-9">
+    <div class="col-xs-9" style="padding-top: 13px;">
       <div ng-controller="SearchController as searchCtrl">
         <form>
           <input type="text"
@@ -27,48 +27,69 @@
                  ng-model="searchCtrl.search"
                  ng-model-options="{getterSetter: true, updateOn: 'default', debounce: {'default': 200}}"/>
         </form>
-
-        <div id="results" class="row">
+        <div id="results" class="row" ng-show="searchCtrl.search().length >= 0">
           <div id="soundcloud-results" class="col-xs-4">
-            <blockquote>SoundCloud</blockquote>
+            <h4>SoundCloud</h4>
+
             <div ng-repeat="result in searchCtrl.soundCloudResults" class="row search-result">
               <div class="col-xs-12" ng-click="searchCtrl.enqueueSC(result)">
                 <img ng-src="{{result.artwork_url || result.user.avatar_url}}" class="search-result-image"/>
 
                 <div class="deemphasize">{{result.user.username}}</div>
                 <div>{{result.title}}</div>
-                <div>{{result.duration | humanizeDuration}}</div>
-                <div><a ng-href="{{result.permalink_url}}" target="_blank" ng-click="$event.stopPropagation();">link</a>
+                <div>
+                  <a ng-href="{{result.permalink_url}}"
+                     target="_blank"
+                     ng-click="$event.stopPropagation();"
+                     class="track-link">
+                    <span class="glyphicon glyphicon-link"></span>
+                  </a>
+                  {{result.duration | humanizeDuration}}
                 </div>
               </div>
             </div>
           </div>
 
           <div id="youtube-results" class="col-xs-4">
-            <blockquote>Youtube</blockquote>
+            <h4>Youtube</h4>
+
             <div ng-repeat="result in searchCtrl.youtubeResults" class="row search-result">
               <div class="col-xs-12" ng-click="searchCtrl.enqueueYT(result)">
                 <img ng-src="{{result.snippet.thumbnails.default.url}}" class="search-result-image"/>
 
                 <div class="deemphasize">{{result.snippet.channelTitle}}</div>
                 <div>{{result.snippet.title}}</div>
-                <div><a ng-href="//youtube.com/watch?v={{result.id.videoId}}" target="_blank"
-                        ng-click="$event.stopPropagation();">link</a></div>
+                <div>
+                  <a ng-href="//youtube.com/watch?v={{result.id.videoId}}"
+                     target="_blank"
+                     ng-click="$event.stopPropagation();"
+                     class="track-link">
+                    <span class="glyphicon glyphicon-link"></span>
+                  </a>
+                  -:--
+                </div>
               </div>
             </div>
           </div>
 
           <div id="spotify-results" class="col-xs-4">
-            <blockquote>Spotify</blockquote>
+            <h4>Spotify</h4>
+
             <div ng-repeat="result in searchCtrl.spotifyResults" class="row search-result">
               <div class="col-xs-12" ng-click="searchCtrl.enqueueSpotify(result)">
                 <img ng-src="{{result.album.images[1].url}}" class="search-result-image"/>
 
                 <div class="deemphasize">{{result.album.name}}</div>
                 <div>{{result.artists[0].name}} - {{result.name}}</div>
-                <div>{{result.duration_ms | humanizeDuration}}</div>
-                <div><a ng-href="{{result.external_urls.spotify}}" target="_blank"
-                        ng-click="$event.stopPropagation();">link</a></div>
+                <div>
+                  <a ng-href="{{result.external_urls.spotify}}"
+                     target="_blank"
+                     ng-click="$event.stopPropagation();"
+                     class="track-link">
+                    <span class="glyphicon glyphicon-link"></span>
+                  </a>
+                  {{result.duration_ms | humanizeDuration}}
+                </div>
               </div>
             </div>
           </div>
@@ -78,51 +99,65 @@
 
     <div id="queue" class="col-xs-3">
       <div ng-controller="QueueController as queueCtrl">
-        <div class="row">
+        <div class="row" style="margin-bottom: 5px">
           <div class="col-xs-12">
-            <h3>Queue</h3>
             <label class="checkbox-inline">
               <input type="checkbox" ng-model="queueCtrl.state.listening" ng-change="queueCtrl.listen()"> Listen
             </label>
-            <a href="/history">View Song History</a>
+            <a href="/history">
+              <span>(Show History)</span>
+            </a>
           </div>
         </div>
 
         <div ng-repeat="song in queueCtrl.queue">
           <div class="row">
-            <div class="col-xs-12">
-              <div ng-switch="song.source">
-                <span ng-switch-when="0">SoundCloud</span>
-                <span ng-switch-when="1">YouTube</span>
-                <span ng-switch-when="2">Spotify</span>
-              </div>
+            <div class="col-xs-12" style="margin-bottom: 15px;">
+              <img ng-src="{{song.artwork}}" class="queue-image"/>
 
-              <img ng-src="{{song.artwork}}" class="search-result-image"/>
-              <div class="deemphasize">{{song.subtitle}}</div>
-              <div>{{song.name}}</div>
-              <div>{{song.duration | humanizeDuration}}</div>
-              <div>
-                <a ng-href="{{song.trackLink}}" target="_blank" ng-click="$event.stopPropagation();">link</a>
+              <div style="height: 75px; overflow: scroll; margin-bottom: 2px;">
+                <div class="deemphasize">{{song.subtitle}}</div>
+                <div>{{song.name}}</div>
+                <div>
+                  <a ng-href="{{song.trackLink}}" target="_blank" ng-click="$event.stopPropagation();">
+                    <span ng-switch="song.source">
+                      <span ng-switch-when="0"><img src="img/soundcloud_icon-16.png"/></span>
+                      <span ng-switch-when="1"><img src="img/youtube_icon-16.png"/></span>
+                      <span ng-switch-when="2"><img src="img/spotify_icon-16.png"/></span>
+                    </span>
+                  </a>
+                  {{song.duration | humanizeDuration}}
+                </div>
               </div>
-              <div>{{song.creator}}</div>
-              <button type="button"
-                      class="btn btn-default"
+              <div ng-show="$first">
+                <div class="progress" style="margin-top: 5px; margin-bottom: 2px;">
+                  <div class="progress-bar" style="width:{{queueCtrl.playState.progress}}%"></div>
+                </div>
+              </div>
+              <div>
+                <span class="glyphicon glyphicon-user"></span>
+                {{song.creator}}
+              </div>
+              <div>
+                <span style="cursor: pointer"
+                      class="glyphicon glyphicon-thumbs-up"
                       ng-click="queueCtrl.upvote(song.id)"
                       bs-tooltip
                       data-title="wtf"
                       data-container="body"
                       data-content-template="upvotes.html">
-                upvote
-                <span class="badge">{{song.upvotes.length}}</span>
-              </button>
-              <button type="button"
-                      class="btn btn-default"
-                      ng-click="queueCtrl.downvote(song.id)">
-                downvote
-                <span class="badge">{{song.downvotes.length}}</span>
-              </button>
-              <div ng-show="$first">
-                progress: {{queueCtrl.playState.progress}}
+                </span>
+                {{song.upvotes.length}}
+                <span style="margin-right: 10px"></span>
+                <span style="cursor: pointer"
+                      class="glyphicon glyphicon-thumbs-down"
+                      ng-click="queueCtrl.downvote(song.id)"
+                      bs-tooltip
+                      data-title="wtf"
+                      data-container="body"
+                      data-content-template="downvotes.html">
+                </span>
+                {{song.downvotes.length}}
               </div>
             </div>
           </div>
@@ -137,11 +172,13 @@
   <div ng-repeat="upvote in song.upvotes">
     <div>{{upvote}}</div>
   </div>
+  <div ng-hide="song.upvotes.length">No upvotes</div>
 </script>
 <script type="text/ng-template" id="downvotes.html">
   <div ng-repeat="downvote in song.downvotes">
     <div>{{downvote}}</div>
   </div>
+  <div ng-hide="song.downvotes.length">No downvotes</div>
 </script>
 
 <iframe id="spotify-player" src="#" hidden></iframe>

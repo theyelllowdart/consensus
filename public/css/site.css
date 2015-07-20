@@ -4,6 +4,7 @@ html {
 }
 
 html, body, .container-fluid {
+  font-size: 13px;
   height: 100%;
 }
 
@@ -31,10 +32,23 @@ html, body, .container-fluid {
   margin-right: 5px;
 }
 
+.queue-image {
+  float: left;
+  height: 75px;
+  width: 75px;
+  margin-right: 5px;
+}
+
+
 #queue {
   background-color: WhiteSmoke;
 }
 
 .deemphasize {
   color: #999;
+}
+
+.track-link {
+  color: black;
+  font-size: 11px;
 }

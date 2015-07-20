@@ -11,12 +11,12 @@ module consensus {
                        public duration?:number,
                        public source?:Source,
                        public name?:string,
-                       public upvotes?:Array<string>,
-                       public downvotes?:Array<string>,
-                       public start?:number,
                        public trackLink?:string,
                        public artwork?:string,
-                       public subtitle?:string) {
+                       public subtitle?:string,
+                       public upvotes?:Array<string>,
+                       public downvotes?:Array<string>,
+                       public start?:number) {
     }
   }
 }

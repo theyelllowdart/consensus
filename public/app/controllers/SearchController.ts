@@ -34,16 +34,17 @@ module consensus {
     }
 
     public enqueueSC(resource:soundcloud.Resource) {
-      this.connectedSocket.then((socket) => {
-        var newSong = new Song(
-          this.uuidGenerator.generate(),
-          resource.stream_url,
-          resource.duration,
-          Source.SOUND_CLOUD,
-          resource.title
-        );
-        socket.emit('enqueue', newSong);
-      });
+      var newSong = new Song(
+        this.uuidGenerator.generate(),
+        resource.stream_url,
+        resource.duration,
+        Source.SOUND_CLOUD,
+        resource.title,
+        resource.permalink_url,
+        (resource.artwork_url || resource.user.avatar_url),
+        resource.user.username
+      );
+      this.connectedSocket.then((socket) => socket.emit('enqueue', newSong));
     }
 
     public enqueueYT(resource:GoogleApiYouTubeSearchResource) {
@@ -54,34 +55,35 @@ module consensus {
           id: resource.id.videoId
         }
       };
-      this.$http.get('https://www.googleapis.com/youtube/v3/videos', youtubeOpts)
-        .success((response:any) => {
-          var duration = response.items[0].contentDetails.duration;
-          var durationMillis = moment.duration(duration).asMilliseconds();
-          this.connectedSocket.then((socket) => {
-            var newSong = new Song(
-              this.uuidGenerator.generate(),
-              resource.id.videoId,
-              durationMillis,
-              Source.YOUTUBE,
-              resource.snippet.title
-            );
-            socket.emit('enqueue', newSong);
-          });
-        })
+      this.$http.get('https://www.googleapis.com/youtube/v3/videos', youtubeOpts).success((response:any) => {
+        var duration = response.items[0].contentDetails.duration;
+        var durationMillis = moment.duration(duration).asMilliseconds();
+        var newSong = new Song(
+          this.uuidGenerator.generate(),
+          resource.id.videoId,
+          durationMillis,
+          Source.YOUTUBE,
+          resource.snippet.title,
+          '//youtube.com/watch?v=' + resource.id.videoId,
+          resource.snippet.thumbnails['default'].url,
+          resource.snippet.channelTitle
+        );
+        this.connectedSocket.then((socket) => socket.emit('enqueue', newSong));
+      })
     }
 
     public enqueueSpotify(track:spotify.Track) {
-      this.connectedSocket.then((socket) => {
-        var newSong = new Song(
-          this.uuidGenerator.generate(),
-          track.uri,
-          track.duration_ms,
-          Source.SPOTIFY,
-          track.name
-        );
-        socket.emit('enqueue', newSong);
-      });
+      var newSong = new Song(
+        this.uuidGenerator.generate(),
+        track.uri,
+        track.duration_ms,
+        Source.SPOTIFY,
+        track.artists[0].name + ' - ' + track.name,
+        track.external_urls.spotify,
+        track.album.images[1].url,
+        track.album.name
+      );
+      this.connectedSocket.then((socket) => socket.emit('enqueue', newSong));
     }
 
     // getter/setter

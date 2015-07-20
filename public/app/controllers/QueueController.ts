@@ -1,6 +1,6 @@
 module consensus {
   class ListenState {
-    listening:boolean = true;
+    listening:boolean = false;
   }
 
   export class QueueController {
@@ -37,7 +37,9 @@ module consensus {
     private stopAll() {
       this.soundcloudPlayer.stop();
       this.youtubePlayer.stop();
-      this.spotifyPlayer.stop();
+      if (this.state.listening) {
+        this.spotifyPlayer.stop();
+      }
       this.timedPlayer.stop();
     }
 

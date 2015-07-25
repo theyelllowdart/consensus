@@ -16,14 +16,15 @@
   "dependencies": {
     "bootstrap-css-only": "~3.3.2",
     "jquery": "~2.1.3",
-    "angular-strap": "~2.2.0",
-    "angular": "~1.3.14",
+    "angular-strap": "~2.3.1",
+    "angular": "~1.4.3",
     "lodash": "~3.4.0",
     "SoundManager2": "scottschiller/SoundManager2#d62192577d7627e94ddaf8d9ede0b837ceda87b4",
     "soundcloud-javascript": "soundcloud/soundcloud-javascript#a1da58a8b7cf3e50dc62ee280635825777413e5d",
     "socket.io-client": "~1.3.5",
     "GoTime": "theyelllowdart/GoTime#9615fc16fb5605d6cb9a46d36468610df8fbe0d4",
     "moment": "~2.10.3",
-    "moment-duration-format": "~1.3.0"
+    "moment-duration-format": "~1.3.0",
+    "angular-cookies": "~1.4.3"
   }
 }

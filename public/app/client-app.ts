@@ -19,7 +19,6 @@
 /// <reference path="services/searcher/YouTubeSearcher.ts"/>
 
 /// <reference path="controllers/QueueController.ts"/>
-/// <reference path="controllers/QuickController.ts"/>
 /// <reference path="controllers/SearchController.ts"/>
 
 
@@ -73,7 +72,6 @@ module consensus {
 
     .controller('SearchController', SearchController)
     .controller('QueueController', QueueController)
-    .controller('QuickController', QuickController)
 
     .filter('humanizeDuration', () => (input) => moment.duration(input)['format']('h:mm:ss'))
 }

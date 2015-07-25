@@ -32,8 +32,9 @@ var LocalStrategy = require('passport-local').Strategy;
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var sessionStore = new session.MemoryStore();
+var redisClient = new RedisStore({client: client});
 app.use(session({
-  store: new RedisStore({client: client}),
+  store: redisClient,
   secret: secret,
   saveUninitialized: false,
   resave: false,
@@ -47,7 +48,7 @@ io.use(passportSocketIo.authorize({
   cookieParser: cookieParser,
   key: 'connect.sid',
   secret: secret,
-  store: new RedisStore({client: client}),
+  store: redisClient,
   success: function onAuthorizeSuccess(data, accept) {
     accept();
   },

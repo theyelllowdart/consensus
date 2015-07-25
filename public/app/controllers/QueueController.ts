@@ -21,7 +21,7 @@ module consensus {
 
     constructor(private $scope:angular.IScope,
                 socketService:Socket,
-                syncedTime: SyncedTime,
+                syncedTime:SyncedTime,
                 private youtubePlayer:YouTubePlayer,
                 private spotifyPlayer:SpotifyPlayer,
                 private soundcloudPlayer:SoundCloudPlayer,
@@ -44,7 +44,7 @@ module consensus {
     }
 
     private addQueueChangeListener():void {
-      this.connectedSocket.then((socket: SocketIOClient.Socket) => socket.on('queueChange', (newQueue:Array<Song>) => {
+      this.connectedSocket.then((socket:SocketIOClient.Socket) => socket.on('queueChange', (newQueue:Array<Song>) => {
         if (newQueue.length > 0) {
           if (this.queue.length === 0 || this.queue[0].id !== newQueue[0].id) {
             this.playState.incrementCounter();
@@ -80,19 +80,19 @@ module consensus {
     }
 
     public status():void {
-      this.connectedSocket.then((socket: SocketIOClient.Socket) => socket.emit('status', {}));
+      this.connectedSocket.then((socket:SocketIOClient.Socket) => socket.emit('status', {}));
     }
 
     public clear():void {
-      this.connectedSocket.then((socket: SocketIOClient.Socket) => socket.emit('clear'));
+      this.connectedSocket.then((socket:SocketIOClient.Socket) => socket.emit('clear'));
     }
 
     public downvote(id:string):void {
-      this.connectedSocket.then((socket: SocketIOClient.Socket) => socket.emit('downvote', id));
+      this.connectedSocket.then((socket:SocketIOClient.Socket) => socket.emit('downvote', id));
     }
 
     public upvote(id:string):void {
-      this.connectedSocket.then((socket: SocketIOClient.Socket) => socket.emit('upvote', id));
+      this.connectedSocket.then((socket:SocketIOClient.Socket) => socket.emit('upvote', id));
     }
 
     public listen():void {

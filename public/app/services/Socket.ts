@@ -10,6 +10,7 @@ module consensus {
       socket.on('connect', () => {
         this.connectedSocketDefer.resolve(socket);
       });
+      socket.on('error', (error) => console.error(error));
     }
 
     public connected(): angular.IPromise<SocketIOClient.Socket> {

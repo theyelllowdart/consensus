@@ -5,7 +5,6 @@ var app = express();
 var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var util = require('util');
 var _ = require('lodash');
 var postgres = require('pg');
 
@@ -219,7 +218,7 @@ app.get('/localAuth',
 
 app.get('/', function (req, res) {
   if (req.user)
-    res.sendFile(path.join(__dirname + '/public/blah.html'));
+    res.sendFile(path.join(__dirname + '/public/index.html'));
   else
     res.redirect('/auth/provider')
 });

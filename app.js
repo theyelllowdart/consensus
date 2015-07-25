@@ -60,12 +60,12 @@ io.use(passportSocketIo.authorize({
   }
 }));
 
-passport.serializeUser(function (user, done) {
-  done(null, user);
+passport.serializeUser(function (email, done) {
+  done(null, email);
 });
 
-passport.deserializeUser(function (id, done) {
-  done(null, id);
+passport.deserializeUser(function (email, done) {
+  done(null, email);
 });
 
 passport.use(new GoogleStrategy({

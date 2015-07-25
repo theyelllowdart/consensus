@@ -34,6 +34,9 @@
     },
     "moment/moment.d.ts": {
       "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+    },
+    "angularjs/angular-cookies.d.ts": {
+      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
     }
   }
 }

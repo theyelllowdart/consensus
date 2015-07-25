@@ -1,15 +1,20 @@
 module consensus {
   class ListenState {
-    listening:boolean = false;
+    public listening:boolean = false;
+
+    constructor(listening:boolean) {
+      this.listening = listening;
+    }
   }
 
   export class QueueController {
     private connectedSocket:angular.IPromise<SocketIOClient.Socket>;
     public queue:Array<Song> = [];
-    public state:ListenState = new ListenState();
+    public state:ListenState;
 
     public static $inject = [
       '$scope',
+      '$cookies',
       'socket',
       'syncedTime',
       'youtubePlayer',
@@ -20,6 +25,7 @@ module consensus {
     ];
 
     constructor(private $scope:angular.IScope,
+                private $cookies:angular.cookies.ICookieStoreService,
                 socketService:Socket,
                 syncedTime:SyncedTime,
                 private youtubePlayer:YouTubePlayer,
@@ -27,6 +33,7 @@ module consensus {
                 private soundcloudPlayer:SoundCloudPlayer,
                 private timedPlayer:TimedPlayer,
                 private playState:PlayerState) {
+      this.state = new ListenState($cookies.get('listening') === 'true');
       this.connectedSocket = socketService.connected();
       syncedTime.whenSynced().then(() => {
         this.addQueueChangeListener();
@@ -96,6 +103,7 @@ module consensus {
     }
 
     public listen():void {
+      (<any> this.$cookies).put('listening', this.state.listening, {expires: moment().add(1, 'year').toDate()});
       this.playState.incrementCounter();
       this.stopAll();
       if (this.queue.length > 0) {

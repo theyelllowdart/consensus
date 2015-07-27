@@ -31,6 +31,7 @@ var projectBowerFiles = bowerFiles({
 gulp.task('tsd', function (callback) {
   return tsd({
     command: 'reinstall',
+    "latest": false,
     config: './tsd.json'
   }, callback);
 });
@@ -54,6 +55,17 @@ gulp.task('scripts', ['tsd'], function () {
     .pipe(concat('output.js'))
     .pipe(gulpIf(!argv.production, sourceMaps.write()))
     .pipe(gulp.dest('public/generated'));
+});
+
+gulp.task('server', function () {
+  return gulp.src('server/*.ts')
+    .pipe(ts({sortOutput: true, module: 'commonjs'}))
+    .pipe(concat('output.js'))
+    .pipe(gulp.dest('server/generated'));
+});
+
+gulp.task('watch', function() {
+  return gulp.watch(['server/*.ts'], ['server']);
 });
 
 gulp.task('css', function () {

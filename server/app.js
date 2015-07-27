@@ -103,7 +103,7 @@ app.get('/oauth2callback',
 );
 //----------END SECURITY---------------
 
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/../public')));
 
 
 require('./logic.js')(io, postgres, databaseURL);
@@ -117,7 +117,7 @@ app.get('/localAuth',
 
 app.get('/', function (req, res) {
   if (req.user)
-    res.sendFile(path.join(__dirname + '/public/blah.html'));
+    res.sendFile(path.join(__dirname + '/../public/blah.html'));
   else
     res.redirect('/auth/provider')
 });

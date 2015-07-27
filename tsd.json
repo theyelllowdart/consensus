@@ -6,37 +6,67 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "jquery/jquery.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "angularjs/angular.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "lodash/lodash.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "socket.io-client/socket.io-client.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "youtube/youtube.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "gapi.youtube/gapi.youtube.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "gapi/gapi.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "spotify/spotify.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "soundcloud/soundcloud.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "moment/moment.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "angularjs/angular-cookies.d.ts": {
-      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "node/node.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "express/express.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "express-session/express-session.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "socket.io/socket.io.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "redis/redis.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "pg/pg.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "passport-google-oauth/passport-google-oauth.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "passport-local/passport-local.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "cookie-parser/cookie-parser.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "errorhandler/errorhandler.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     }
   }
 }

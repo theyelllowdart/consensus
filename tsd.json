@@ -33,7 +33,7 @@
       "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "moment/moment.d.ts": {
-      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+      "commit": "e8d8cf585e820e49cd3758da2d5e5ad1db108631"
     },
     "angularjs/angular-cookies.d.ts": {
       "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
@@ -66,6 +66,12 @@
       "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
     "errorhandler/errorhandler.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "serve-static/serve-static.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
+    "mime/mime.d.ts": {
       "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     }
   }

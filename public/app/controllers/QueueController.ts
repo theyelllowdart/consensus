@@ -14,7 +14,7 @@ module consensus {
 
     public static $inject = [
       '$scope',
-      '$cookies',
+      '$cookieStore',
       'socket',
       'syncedTime',
       'youtubePlayer',

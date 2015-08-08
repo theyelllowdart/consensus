@@ -10,3 +10,5 @@ public/app/**/*.js.map
 
 public/generated/
 server/generated/
+
+npm-debug.log

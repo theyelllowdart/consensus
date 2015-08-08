@@ -11,7 +11,7 @@
 /// <reference path='rooms.ts' />
 /// <reference path='../typings/errorhandler/errorhandler.d.ts' />
 
-require('dotenv').load({path: "../.env"});
+require('dotenv').load({silent: true});
 import express = require('express');
 import http = require("http");
 import socketIO = require('socket.io')
@@ -48,7 +48,7 @@ db.done(() => {
   throw error
 });
 
-app.use(express.static(path.join(__dirname, '/../../public')));
+app.use(express.static('public'));
 app.use(errorhandler());
 app.use(cookieParser());
 var secret = process.env.COOKIE_SECRET;
@@ -107,7 +107,7 @@ app.get('/', reqAuth, (req:express.Request, res:express.Response, next:Function)
 });
 
 app.get('/room/:id', reqAuth, (req:express.Request, res:express.Response, next:Function) => {
-  res.sendFile(path.join(__dirname + '/../../public/blah.html'));
+  res.sendFile(path.join(process.cwd() + '/public/blah.html'));
 });
 
 rooms.setup(io, db);

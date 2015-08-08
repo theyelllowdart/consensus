@@ -56,6 +56,9 @@
     "pg/pg.d.ts": {
       "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },
+    "passport/passport.d.ts": {
+      "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
+    },
     "passport-google-oauth/passport-google-oauth.d.ts": {
       "commit": "c238a7853b075725710f4b86dd9dbd645d852d4d"
     },

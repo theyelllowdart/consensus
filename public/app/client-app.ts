@@ -73,7 +73,7 @@ module consensus {
 
     .filter('humanizeDuration', () => (input) => moment.duration(input)['format']('h:mm:ss'))
 
-    .config(($locationProvider) => $locationProvider.html5Mode(true));
+    .config(['$locationProvider', ($locationProvider) => $locationProvider.html5Mode(true)]);
 
   $('body').show();
 }

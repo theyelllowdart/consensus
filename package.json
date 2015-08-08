@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "preinstall": "bower install && tsd reinstall & gulp scripts --production && gulp css --production",
-    "start": "node app.js"
+    "postinstall": "bower install && tsd reinstall && gulp app --production",
+    "start": "node server/generated/app.js"
   },
   "dependencies": {
     "bower": "^1.3.12",
@@ -13,9 +13,9 @@
     "cookie-parser": "~1.3.3",
     "debug": "~2.1.1",
     "dotenv": "^1.0.0",
+    "errorhandler": "^1.4.2",
     "express": "~4.11.1",
     "express-session": "^1.10.2",
-    "googleapis": "^3.9.0",
     "gulp": "^3.8.11",
     "gulp-concat": "^2.5.2",
     "gulp-if": "^1.2.5",

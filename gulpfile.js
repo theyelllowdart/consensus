@@ -100,3 +100,5 @@ gulp.task('watch-server', function () {
 });
 
 gulp.task('watch-the-watchmen', ['watch-scripts', 'watch-css', 'watch-server']);
+
+gulp.task('app', ['scripts', 'css', 'server']);

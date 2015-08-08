@@ -47,14 +47,8 @@ gulp.task('scripts', function () {
     .pipe(gulp.dest('public/generated'));
 });
 
-gulp.task('server', function () {
-  return gulp.src('server/*.ts')
-    .pipe(ts({sortOutput: true, module: 'commonjs'}))
-    .pipe(gulp.dest('server/generated'));
-});
-
-gulp.task('watch', function() {
-  return gulp.watch(['server/*.ts'], ['server']);
+gulp.task('watch-scripts', function() {
+  return gulp.watch(['public/app/**/*.ts'], ['scripts']);
 });
 
 gulp.task('css', function () {
@@ -72,3 +66,19 @@ gulp.task('css', function () {
     .pipe(gulpIf(!argv.production, sourceMaps.write()))
     .pipe(gulp.dest('public/generated'));
 });
+
+gulp.task('watch-css', function() {
+  return gulp.watch(['public/css/*.css'], ['css']);
+});
+
+gulp.task('server', function () {
+  return gulp.src('server/*.ts')
+    .pipe(ts({sortOutput: true, module: 'commonjs'}))
+    .pipe(gulp.dest('server/generated'));
+});
+
+gulp.task('watch-server', function() {
+  return gulp.watch(['server/*.ts'], ['server']);
+});
+
+gulp.task('watch-the-watchmen', ['watch-scripts', 'watch-css', 'watch-server']);

@@ -22,7 +22,7 @@ module consensus {
                 $q:angular.IQService, private $window:angular.IWindowService) {
       var youtubeReadyDefer = $q.defer();
       $window['onYouTubeIframeAPIReady'] = () => {
-        var ytPlayer = new YT.Player('player', {
+        var ytPlayer = new YT.Player('youtube-player', {
           events: {
             onReady: () => {
               youtubeReadyDefer.resolve(ytPlayer);

@@ -1,10 +1,14 @@
 var _ = require('lodash');
 
-module.exports = function (io, postgres, databaseURL) {
+export function setup(io:SocketIO.Server, db:any) {
   var songQueue = [];
   var delaySongDuration = 1000;
 
   io.on('connection', function (socket) {
+    var room = socket.request.query.room;
+    socket.join(room);
+    var roomSocket = socket.to(room);
+
     var userEmail = socket.request.user;
     console.log('user ' + userEmail + ' connected');
     socket.on('disconnect', function () {
@@ -16,7 +20,7 @@ module.exports = function (io, postgres, databaseURL) {
     });
     socket.on('clear', function () {
       songQueue = [];
-      io.emit('queueChange', songQueue);
+      roomSocket.emit('queueChange', songQueue);
     });
     socket.on('enqueue', function (song) {
       song.creator = userEmail;
@@ -27,21 +31,11 @@ module.exports = function (io, postgres, databaseURL) {
       if (songQueue.length === 1) {
         startSong(io, songQueue[0])
       }
-      postgres.connect(databaseURL, function (err, client, done) {
-        if (err) {
-          return console.error('error fetching client from pool', err);
-        }
-        client.query(
-          'INSERT into Song (id, creator, url, duration, source, name, upvotes, downvotes, start, scheduled) ' +
-          'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
-          [song.id, song.creator, song.url, song.duration, song.source, song.name, song.upvotes, song.downvotes, song.start, song.scheduled],
-          function (err) {
-            done();
-            if (err) {
-              return console.error('error running query', err);
-            }
-          });
-      });
+      db.then((x:any) => x.query(
+        'INSERT into Song (id, creator, url, duration, source, name, upvotes, downvotes, start, scheduled) ' +
+        'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
+        [song.id, song.creator, song.url, song.duration, song.source, song.name, song.upvotes, song.downvotes, song.start, song.scheduled]
+      ));
       io.emit('queueChange', songQueue);
     });
     socket.on('upvote', function (id) {
@@ -104,5 +98,4 @@ module.exports = function (io, postgres, databaseURL) {
     song.start = Date.now() + delaySongDuration;
     endSongTimeoutFn(io, song);
   }
-
-};
+}

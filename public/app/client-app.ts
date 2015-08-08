@@ -71,7 +71,9 @@ module consensus {
     .controller('SearchController', SearchController)
     .controller('QueueController', QueueController)
 
-    .filter('humanizeDuration', () => (input) => moment.duration(input)['format']('h:mm:ss'));
+    .filter('humanizeDuration', () => (input) => moment.duration(input)['format']('h:mm:ss'))
+
+    .config(($locationProvider) => $locationProvider.html5Mode(true));
 
   $('body').show();
 }

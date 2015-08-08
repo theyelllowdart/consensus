@@ -8,7 +8,7 @@
 /// <reference path='../typings/passport/passport.d.ts' />
 /// <reference path='../typings/passport-local/passport-local.d.ts' />
 /// <reference path='../typings/passport-google-oauth/passport-google-oauth.d.ts' />
-/// <reference path='initializer.ts' />
+/// <reference path='rooms.ts' />
 /// <reference path='../typings/errorhandler/errorhandler.d.ts' />
 
 require('dotenv').load({path: "../.env"});
@@ -27,6 +27,7 @@ var RedisStore = require('connect-redis')(session);
 import cookieParser = require('cookie-parser');
 import errorhandler = require('errorhandler');
 var path = require('path');
+var rooms = require('./rooms');
 
 var app = express();
 var server = http.createServer(app);
@@ -79,7 +80,7 @@ io.use(passportSocketIO.authorize({
 passport.serializeUser((email, done) => done(null, email));
 passport.deserializeUser((email, done) => done(null, email));
 passport.use(new googleStrategy.OAuth2Strategy({
-    clientID: '227716408358-fgfc4m43ec3qup0p8rjler19miuf1jkl.apps.googleusercontent.com',
+    clientID: process.env.GOOLGE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_APP_CLIENT_SECRET,
     callbackURL: process.env.CALLBACKURL
   },
@@ -92,8 +93,14 @@ app.get('/oauth2callback', (req:express.Request, res:express.Response, next:Func
   })(req, res, next);
 });
 
-
-Initializer.setupRooms(io, db);
+function reqAuth(req:express.Request, res:express.Response, next:Function) {
+  if (req.user) {
+    next();
+  } else {
+    res.cookie('redirect', req.url);
+    passport.authenticate('google', {scope: 'email'})(req, res, next);
+  }
+}
 
 app.get('/', reqAuth, (req:express.Request, res:express.Response, next:Function) => {
   res.redirect('/room/fsqny')
@@ -103,14 +110,7 @@ app.get('/room/:id', reqAuth, (req:express.Request, res:express.Response, next:F
   res.sendFile(path.join(__dirname + '/../../public/blah.html'));
 });
 
-function reqAuth(req:express.Request, res:express.Response, next:Function) {
-  if (req.user) {
-    next();
-  } else {
-    res.cookie('redirect', req.url);
-    passport.authenticate('google', {scope: 'email'})(req, res, next);
-  }
-}
+rooms.setup(io, db);
 
 app.set('port', (process.env.PORT || 8080));
 server.listen(app.get('port'), () => console.log('listening on ' + app.get('port')));

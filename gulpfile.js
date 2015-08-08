@@ -60,7 +60,6 @@ gulp.task('scripts', ['tsd'], function () {
 gulp.task('server', function () {
   return gulp.src('server/*.ts')
     .pipe(ts({sortOutput: true, module: 'commonjs'}))
-    .pipe(concat('output.js'))
     .pipe(gulp.dest('server/generated'));
 });
 

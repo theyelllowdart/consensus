@@ -44,7 +44,7 @@ module consensus {
   $('#spotify-player').attr('src', '//embed.spotify.com/?uri=spotify:track:0s2d069MZXKFfBDRJWm7Bo');
   $('body').show();
 
-  angular.module('consensus', ['ngCookies', 'mgcrea.ngStrap'])
+  angular.module('consensus', ['ipCookie', 'mgcrea.ngStrap'])
     .constant('spotifyIFrameId', 'spotify-player')
     .constant('soundcloudConfig', new SoundCloudConfig('b45b1aa10f1ac2941910a7f0d10f8e28', 20))
     .constant('youtubeConfig', new YoutubeConfig('AIzaSyAxMPtoBR3TU4gZr2X0JgJo562UjGsIj3U'))

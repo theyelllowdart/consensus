@@ -14,7 +14,7 @@ module consensus {
 
     public static $inject = [
       '$scope',
-      '$cookieStore',
+      'ipCookie',
       'socket',
       'syncedTime',
       'youtubePlayer',
@@ -25,7 +25,7 @@ module consensus {
     ];
 
     constructor(private $scope:angular.IScope,
-                private $cookies:angular.cookies.ICookieStoreService,
+                private ipCookie:any,
                 socketService:Socket,
                 syncedTime:SyncedTime,
                 private youtubePlayer:YouTubePlayer,
@@ -33,7 +33,7 @@ module consensus {
                 private soundcloudPlayer:SoundCloudPlayer,
                 private timedPlayer:TimedPlayer,
                 private playState:PlayerState) {
-      this.state = new ListenState($cookies.get('listening') === 'true');
+      this.state = new ListenState(!!ipCookie('listening'));
       this.connectedSocket = socketService.connected();
       syncedTime.whenSynced().then(() => {
         this.addQueueChangeListener();
@@ -103,7 +103,10 @@ module consensus {
     }
 
     public listen():void {
-      (<any> this.$cookies).put('listening', this.state.listening, {expires: moment().add(1, 'year').toDate()});
+      this.ipCookie('listening', this.state.listening, {
+        expires: 365,
+        path: '/'
+      });
       this.playState.incrementCounter();
       this.stopAll();
       if (this.queue.length > 0) {

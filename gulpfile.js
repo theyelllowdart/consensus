@@ -8,8 +8,6 @@ var ts = require('gulp-typescript');
 var uglify = require('gulp-uglify');
 var StreamQueue = require('streamqueue');
 var argv = require('yargs').argv;
-var tsd = require('gulp-tsd');
-
 
 var projectBowerFiles = bowerFiles({
   overrides: {
@@ -28,15 +26,7 @@ var projectBowerFiles = bowerFiles({
   }
 });
 
-gulp.task('tsd', function (callback) {
-  return tsd({
-    command: 'reinstall',
-    "latest": false,
-    config: './tsd.json'
-  }, callback);
-});
-
-gulp.task('scripts', ['tsd'], function () {
+gulp.task('scripts', function () {
   var bower = gulp
     .src(projectBowerFiles.ext('js').files)
     .pipe(gulpIf(!argv.production, sourceMaps.init()))

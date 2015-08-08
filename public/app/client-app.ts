@@ -41,8 +41,6 @@ module consensus {
   });
 
   var soundManager = window['soundManager'];
-  $('#spotify-player').attr('src', '//embed.spotify.com/?uri=spotify:track:0s2d069MZXKFfBDRJWm7Bo');
-  $('body').show();
 
   angular.module('consensus', ['ipCookie', 'mgcrea.ngStrap'])
     .constant('spotifyIFrameId', 'spotify-player')
@@ -73,5 +71,7 @@ module consensus {
     .controller('SearchController', SearchController)
     .controller('QueueController', QueueController)
 
-    .filter('humanizeDuration', () => (input) => moment.duration(input)['format']('h:mm:ss'))
+    .filter('humanizeDuration', () => (input) => moment.duration(input)['format']('h:mm:ss'));
+
+  $('body').show();
 }

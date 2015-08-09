@@ -37,11 +37,14 @@ export function setup(io:SocketIO.Server, db:any) {
       if (songQueue.length === 1) {
         startSong(io, songQueue[0])
       }
-      db.then((x:any) => x.query(
+      db.query(
         'INSERT into Song (id, creator, url, duration, source, name, upvotes, downvotes, start, scheduled) ' +
-        'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
+        'VALUES($1, $2, $3, $4, $5, $6, $7, $8::varchar[], $9, $10)',
         [song.id, song.creator, song.url, song.duration, song.source, song.name, song.upvotes, song.downvotes, song.start, song.scheduled]
-      ));
+      ).then(() => {},
+        (reason) => {
+          console.error(reason);
+        });
       getRoomSocket().emit('queueChange', songQueue);
     });
     socket.on('upvote', function (id) {

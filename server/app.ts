@@ -39,11 +39,11 @@ redisClient.auth(redisURL.auth.split(":")[1]);
 var redisStore = new RedisStore({client: redisClient});
 
 var pgURL = process.env.DATABASE_URL;
-var db = pgp()(pgURL).connect().then((db) => {
+var db = pgp()(pgURL);
+db.connect().then((db) => {
   console.log('connected to postgres');
   return db;
-});
-db.done(() => {
+}).done(() => {
 }, (error) => {
   throw error
 });
@@ -108,6 +108,15 @@ app.get('/', reqAuth, (req:express.Request, res:express.Response, next:Function)
 
 app.get('/room/:id', reqAuth, (req:express.Request, res:express.Response, next:Function) => {
   res.sendFile(path.join(process.cwd() + '/public/blah.html'));
+});
+
+app.get('/history', function (req, res) {
+  db.query('SELECT * FROM SONG ORDER BY scheduled desc LIMIT 100')
+    .then((result) => {
+      res.json(result);
+    }, (reason) => {
+      console.error(reason);
+    });
 });
 
 rooms.setup(io, db);

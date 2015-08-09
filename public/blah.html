@@ -5,11 +5,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <script src="/generated/output.js" defer></script>
+  <script src="generated/output.js" defer></script>
   <script src="//www.youtube.com/iframe_api" defer></script>
 
-  <link rel="icon" href="/favicon.ico"/>
-  <link rel="stylesheet" type="text/css" href="/generated/output.css">
+  <link rel="icon" href="favicon.ico"/>
+  <link rel="stylesheet" type="text/css" href="generated/output.css">
 </head>
 
 
@@ -122,9 +122,9 @@
                 <div>
                   <a ng-href="{{song.trackLink}}" target="_blank" ng-click="$event.stopPropagation();">
                     <span ng-switch="song.source">
-                      <span ng-switch-when="0"><img src="/img/soundcloud_icon-16.png"/></span>
-                      <span ng-switch-when="1"><img src="/img/youtube_icon-16.png"/></span>
-                      <span ng-switch-when="2"><img src="/img/spotify_icon-16.png"/></span>
+                      <span ng-switch-when="0"><img src="img/soundcloud_icon-16.png"/></span>
+                      <span ng-switch-when="1"><img src="img/youtube_icon-16.png"/></span>
+                      <span ng-switch-when="2"><img src="img/spotify_icon-16.png"/></span>
                     </span>
                   </a>
                   {{song.duration | humanizeDuration}}

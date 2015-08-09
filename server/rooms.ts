@@ -1,15 +1,15 @@
 var _ = require('lodash');
 
 export function setup(io:SocketIO.Server, db:any) {
-  var rooms = {};
+  var songQueues = {};
   var delaySongDuration = 1000;
 
   io.on('connection', function (socket) {
     var room = socket.request._query.room;
-    if (!rooms[room]) {
-      rooms[room] = [];
+    if (!songQueues[room]) {
+      songQueues[room] = [];
     }
-    var songQueue = rooms[room];
+    var songQueue = songQueues[room];
     socket.join(room);
     function getRoomSocket() {
       return io.sockets.to(room);

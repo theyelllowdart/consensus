@@ -1,15 +1,16 @@
-var gulp = require('gulp');
 var bowerFiles = require('bower-files');
+var argv = require('yargs').argv;
 var concat = require('gulp-concat');
+var gulp = require('gulp');
 var gulpIf = require('gulp-if');
 var minifyCSS = require('gulp-minify-css');
-var sourceMaps = require('gulp-sourcemaps');
-var ts = require('gulp-typescript');
-var uglify = require('gulp-uglify');
-var StreamQueue = require('streamqueue');
-var argv = require('yargs').argv;
-var plumber = require('gulp-plumber');
 var notify = require('gulp-notify');
+var plumber = require('gulp-plumber');
+var replace = require('gulp-replace');
+var requirejs = require('requirejs');
+var sourceMaps = require('gulp-sourcemaps');
+var StreamQueue = require('streamqueue');
+var ts = require('gulp-typescript');
 
 var projectBowerFiles = bowerFiles({
   overrides: {
@@ -37,28 +38,10 @@ function reportError(error) {
 }
 
 gulp.task('scripts', function () {
-  var bower = gulp
-    .src(projectBowerFiles.ext('js').files)
-    .pipe(plumber({errorHandler: reportError}))
+  return gulp.src('public/app/**/*.ts')
     .pipe(gulpIf(!argv.production, sourceMaps.init()))
-    .pipe(gulpIf(argv.production, uglify()));
-
-  var typeScript = gulp.src('public/app/**/*.ts')
-    .pipe(plumber({errorHandler: reportError}))
-    .pipe(gulpIf(!argv.production, sourceMaps.init()))
-    .pipe(ts({sortOutput: true}))
-    .pipe(gulpIf(argv.production, uglify()));
-
-  var stream = new StreamQueue({objectMode: true});
-  stream.queue(bower);
-  stream.queue(typeScript);
-
-  return stream.done()
-    .pipe(plumber({errorHandler: reportError}))
-    .pipe(concat('output.js'))
-    .pipe(gulpIf(!argv.production, sourceMaps.write()))
-    .pipe(gulp.dest('public/generated'))
-    .on('error', reportError);
+    .pipe(ts({sortOutput: true, module: 'amd'}))
+    .pipe(gulp.dest('public/generated/js'));
 });
 
 gulp.task('watch-scripts', function () {
@@ -88,9 +71,11 @@ gulp.task('watch-css', function () {
 });
 
 gulp.task('server', function () {
-  return gulp.src('server/*.ts')
+  return gulp.src(['public/app/models/Models.ts', 'server/*.ts'])
     .pipe(plumber({errorHandler: reportError}))
     .pipe(ts({sortOutput: true, module: 'commonjs'}))
+    // HACK(aaron): replace require("../public/app/Models/Models") with require("./Models")
+    .pipe(replace('\.\.\/public\/app\/Models\/Models', './Models'))
     .pipe(gulp.dest('server/generated'))
     .on('error', reportError);
 });
@@ -101,4 +86,53 @@ gulp.task('watch-server', function () {
 
 gulp.task('watch-the-watchmen', ['watch-scripts', 'watch-css', 'watch-server']);
 
-gulp.task('app', ['scripts', 'css', 'server']);
+gulp.task('app', ['requirejs', 'css', 'server']);
+
+gulp.task("requireOptimize", ['scripts'], function (done) {
+  return requirejs.optimize({
+    appDir: "public/generated/js",
+    baseUrl: "./",
+    dir: "public/generated/build",
+    enforceDefine: true,
+    paths: {
+      jquery: "../../../bower_components/jquery/dist/jquery",
+      angular: "../../../bower_components/angular/angular",
+      angularCookie: "../../../bower_components/angular-cookie/angular-cookie",
+      angularStrap: "../../../bower_components/angular-strap/dist/angular-strap",
+      angularStrapTPL: "../../../bower_components/angular-strap/dist/angular-strap.tpl",
+      GoTime: "../../../bower_components/GoTime/GoTime",
+      lodash: "../../../bower_components/lodash/lodash",
+      moment: "../../../bower_components/moment/moment",
+      momentDurationFormat: "../../../bower_components/moment-duration-format/lib/moment-duration-format",
+      socketIOClient: "../../../bower_components/socket.io-client/socket.io",
+      SoundManager: "../../../bower_components/SoundManager2/script/soundmanager2",
+      soundcloudJavascript: "../../../bower_components/soundcloud-javascript/releases/sdk"
+    },
+    name: "YouTubeIFrame",
+    removeCombined: true,
+    optimize: 'none',
+    shim: {
+      momentDurationFormat: {
+        deps: ['moment']
+      },
+      soundcloudJavascript: {
+        deps: ['SoundManager'],
+        init: function (SoundManager) {
+          window.soundManager = SoundManager.soundManager;
+        }
+      }
+    },
+    wrapShim: true
+  }, function (e) {
+    console.log(e);
+    done();
+  }, function (e) {
+    console.error(e);
+    done();
+  });
+});
+
+gulp.task("requirejs", ["requireOptimize"], function(){
+  return gulp.src("bower_components/requirejs/require.js")
+    .pipe(gulp.dest('public/generated/js'));
+});

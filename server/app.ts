@@ -36,6 +36,9 @@ var io = (<SocketIO.Server> socketIO(server));
 var redisURL = url.parse(process.env.REDIS_URL);
 var redisClient = redis.createClient(redisURL.port, redisURL.hostname);
 redisClient.auth(redisURL.auth.split(":")[1]);
+redisClient.on('error', (msg) => {
+  throw msg;
+});
 var redisStore = new RedisStore({client: redisClient});
 
 var pgURL = process.env.DATABASE_URL;

@@ -1,5 +1,3 @@
-module consensus {
-  export interface Searcher<T> {
-    search(query:string):angular.IPromise<T>
-  }
+export interface Searcher<T> {
+  search(query:string):angular.IPromise<T>
 }

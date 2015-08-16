@@ -1,110 +1,120 @@
+/// <reference path='../typings/node/node.d.ts' />
+/// <reference path='../public/app/Models/Models.ts' />
+
 var _ = require('lodash');
+var uuid = require('node-uuid');
+import consensus = require("../public/app/Models/Models");
 
 export function setup(io:SocketIO.Server, db:any) {
   var songQueues = {};
-  var delaySongDuration = 1000;
 
   io.on('connection', function (socket) {
+    var user = socket.request.user;
+    console.log('user ' + user + ' connected');
     var room = socket.request._query.room;
-    if (!songQueues[room]) {
-      songQueues[room] = [];
-    }
-    var songQueue = songQueues[room];
     socket.join(room);
-    function getRoomSocket() {
-      return io.sockets.to(room);
+    if (!songQueues[room]) {
+      songQueues[room] = new SongQueue((songs:Array<consensus.Song>) => io.sockets.to(room).emit('queueChange', songs));
     }
-
-    var userEmail = socket.request.user;
-    console.log('user ' + userEmail + ' connected');
+    var songQueue:SongQueue = songQueues[room];
     socket.on('disconnect', function () {
-      console.log('user ' + userEmail + ' disconnected');
+      console.log('user ' + user + ' disconnected');
     });
     socket.on('time', function (data) {
       data.serverTime = Date.now();
       socket.emit("time", data)
     });
-    socket.on('clear', function () {
-      songQueue = [];
-      getRoomSocket().emit('queueChange', songQueue);
-    });
-    socket.on('enqueue', function (song) {
-      song.creator = userEmail;
-      song.scheduled = new Date();
-      song.downvotes = [];
-      song.upvotes = [userEmail];
-      songQueue.push(song);
-      if (songQueue.length === 1) {
-        startSong(io, songQueue[0])
-      }
+    socket.on('enqueue', function (songRequest:consensus.SongRequest) {
+      var id = uuid.v1();
+      var song = new consensus.Song(id, user, songRequest.url, songRequest.duration, songRequest.source,
+        songRequest.name, songRequest.trackLink, songRequest.artwork, songRequest.subtitle, [user], [], Date.now());
       db.query(
-        'INSERT into Song (id, creator, url, duration, source, name, upvotes, downvotes, start, scheduled) ' +
-        'VALUES($1, $2, $3, $4, $5, $6, $7, $8::varchar[], $9, $10)',
-        [song.id, song.creator, song.url, song.duration, song.source, song.name, song.upvotes, song.downvotes, song.start, song.scheduled]
-      ).then(() => {},
+        'INSERT into Song (id, creator, url, duration, source, name, upvotes, downvotes, scheduled) ' +
+        'VALUES($1, $2, $3, $4, $5, $6, $7, $8::varchar[], $9)',
+        [song.id, song.creator, song.url, song.duration, song.source, song.name, song.upvotes, song.downvotes, new Date(song.scheduled)]
+      ).then(() => {
+        },
         (reason) => {
           console.error(reason);
         });
-      getRoomSocket().emit('queueChange', songQueue);
+      songQueue.add(song);
     });
     socket.on('upvote', function (id) {
-      vote(io, id, userEmail, function (song) {
-        return song.upvotes;
-      }, function (song) {
-        return song.downvotes;
-      })
+      songQueue.upvote(id, user);
     });
     socket.on('downvote', function (id) {
-      vote(io, id, userEmail, function (song) {
-        return song.downvotes;
-      }, function (song) {
-        return song.upvotes;
-      })
+      songQueue.downvote(id, user);
     });
     socket.on('status', function () {
-      getRoomSocket().emit('queueChange', songQueue);
+      socket.emit('queueChange', songQueue.songs);
+    });
+  });
+}
+
+class SongQueue {
+  public songs:Array<consensus.Song> = [];
+  private delaySongDuration:number = 1000;
+  private playTimeout:any;
+  private notifyQueueChange:() => void;
+
+  constructor(notifyQueueChange:(songs:Array<consensus.Song>)=>void) {
+    this.notifyQueueChange = () => notifyQueueChange(this.songs)
+  }
+
+  public add(song:consensus.Song) {
+    this.songs.push(song);
+    if (this.songs.length === 1) {
+      this.play();
+    }
+    this.notifyQueueChange();
+  }
+
+  private play():void {
+    clearTimeout(this.playTimeout);
+    var song = _.first(this.songs);
+    if (song) {
+      song.start = Date.now() + this.delaySongDuration;
+      this.playTimeout = setTimeout(() => {
+        this.songs.shift();
+        this.play();
+        this.notifyQueueChange();
+      }, song.duration + (this.delaySongDuration * 2));
+    }
+  }
+
+  public upvote(id:string, user:string):void {
+    this.vote(id, user, (song:consensus.Song) => song.upvotes, (song:consensus.Song) => song.downvotes);
+  }
+
+  public downvote(id:string, user:string):void {
+    this.vote(id, user, (song:consensus.Song) => song.downvotes, (song:consensus.Song) => song.upvotes);
+  }
+
+  private vote(id:string,
+               user:string,
+               getSameVotes:(song:consensus.Song) => Array<string>,
+               getOppositeVotes:(song:consensus.Song) => Array<string>):any {
+    var index = _.findIndex(this.songs, function (song) {
+      return song.id === id;
+    });
+    if (index === -1) return false;
+    var song = this.songs[index];
+    _.remove(getOppositeVotes(song), function (voter) {
+      return voter === user;
+    });
+    var nullifiedVote = _.remove(getSameVotes(song), function (voter) {
+      return voter === user;
     });
 
-    function vote(io, id, userEmail, sameVotesFn, oppositeVotesFn) {
-      var index = _.findIndex(songQueue, function (song) {
-        return song.id === id;
-      });
-      if (index === -1) return false;
-      var song = songQueue[index];
-      _.remove(oppositeVotesFn(song), function (email) {
-        return email === userEmail;
-      });
-      var nullifiedVote = _.remove(sameVotesFn(song), function (email) {
-        return email === userEmail;
-      });
-      if (nullifiedVote.length === 0) {
-        sameVotesFn(song).push(userEmail)
-      }
-      if (song.downvotes.length >= song.upvotes.length) {
-        songQueue.splice(index, 1);
-        if (index === 0 && songQueue.length > 0) {
-          startSong(io, songQueue[0]);
-        }
-      }
-      getRoomSocket().emit('queueChange', songQueue);
+    if (nullifiedVote.length === 0) {
+      getSameVotes(song).push(user);
     }
-
-    function startSong(io, song) {
-      function endSongTimeoutFn(io, song) {
-        setTimeout(function () {
-          // guard for case if downvoting removes song
-          if (songQueue.length > 0 && songQueue[0].id === song.id) {
-            songQueue.shift();
-            if (songQueue.length > 0) {
-              startSong(io, songQueue[0])
-            }
-            getRoomSocket().emit('queueChange', songQueue);
-          }
-        }, song.duration + (delaySongDuration * 2));
+    if (song.downvotes.length >= song.upvotes.length && (song.downvotes.length > 0 || song.upvotes.length > 0)) {
+      this.songs.splice(index, 1);
+      if (index === 0) {
+        this.play();
       }
-
-      song.start = Date.now() + delaySongDuration;
-      endSongTimeoutFn(io, song);
     }
-  });
+    this.notifyQueueChange();
+  }
 }

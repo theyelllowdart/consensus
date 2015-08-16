@@ -1,46 +1,49 @@
-module consensus {
-  export class SyncSearcher<TSearchResult, TSearcher extends Searcher<any>> {
-    private seed:number = 0;
-    private resultSeed:number = 0;
+import searcher = require('Searcher');
+import soundCloudSearcher = require('SoundCloudSearcher');
+import youtubeSearcher = require('YouTubeSearcher');
+import spotifySearcher = require('SpotifySearcher');
 
-    static $inject = ['$q'];
+export class SyncSearcher<TSearchResult, TSearcher extends searcher.Searcher<any>> {
+  private seed:number = 0;
+  private resultSeed:number = 0;
 
-    constructor(private $q:angular.IQService, private searcher:TSearcher) {
-    }
+  static $inject = ['$q'];
 
-    public search(query:string):angular.IPromise<TSearchResult> {
-      var currentSeed = ++this.seed;
-
-      return this.searcher.search(query)
-        .then((response) => {
-          if (currentSeed >= this.resultSeed) {
-            this.resultSeed = currentSeed;
-            return response
-          } else {
-            this.$q.reject();
-          }
-        });
-    }
+  constructor(private $q:angular.IQService, private searcher:TSearcher) {
   }
 
-  export class SyncedSoundCloudSearcher extends SyncSearcher<Array<soundcloud.Track>, SoundCloudSearcher> {
-    static $inject = ['$q', 'soundcloudSearcher'];
-    constructor($q:angular.IQService, searcher:SoundCloudSearcher) {
-      super($q, searcher)
-    }
-  }
+  public search(query:string):angular.IPromise<TSearchResult> {
+    var currentSeed = ++this.seed;
 
-  export class SyncedYouTubeSearcher extends SyncSearcher<Array<GoogleApiYouTubeSearchResource>, YouTubeSearcher> {
-    static $inject = ['$q', 'youtubeSearcher'];
-    constructor($q:angular.IQService, searcher:YouTubeSearcher) {
-      super($q, searcher)
-    }
+    return this.searcher.search(query)
+      .then((response) => {
+        if (currentSeed >= this.resultSeed) {
+          this.resultSeed = currentSeed;
+          return response
+        } else {
+          this.$q.reject();
+        }
+      });
   }
+}
 
-  export class SyncedSpotifySearcher extends SyncSearcher<Array<spotify.Track>, SpotifySearcher> {
-    static $inject = ['$q', 'spotifySearcher'];
-    constructor($q:angular.IQService, searcher:SpotifySearcher) {
-      super($q, searcher)
-    }
+export class SyncedSoundCloudSearcher extends SyncSearcher<Array<soundcloud.Track>, soundCloudSearcher.SoundCloudSearcher> {
+  static $inject = ['$q', 'soundcloudSearcher'];
+  constructor($q:angular.IQService, s:soundCloudSearcher.SoundCloudSearcher) {
+    super($q, s)
+  }
+}
+
+export class SyncedYouTubeSearcher extends SyncSearcher<Array<GoogleApiYouTubeSearchResource>, youtubeSearcher.YouTubeSearcher> {
+  static $inject = ['$q', 'youtubeSearcher'];
+  constructor($q:angular.IQService, s:youtubeSearcher.YouTubeSearcher) {
+    super($q, s)
+  }
+}
+
+export class SyncedSpotifySearcher extends SyncSearcher<Array<spotify.Track>, spotifySearcher.SpotifySearcher> {
+  static $inject = ['$q', 'spotifySearcher'];
+  constructor($q:angular.IQService, s:spotifySearcher.SpotifySearcher) {
+    super($q, s)
   }
 }

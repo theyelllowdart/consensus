@@ -35,13 +35,13 @@ declare var soundManager:any;
 declare var moment:moment.MomentStatic;
 declare var SC:any;
 SC.initialize({
-  client_id: 'b45b1aa10f1ac2941910a7f0d10f8e28',
+  client_id: 'bea3e36a337bd563d7ea12b7f6e20861',
   redirect_uri: 'html/callback.html'
 });
 
 angular.module('consensus', ['ipCookie', 'mgcrea.ngStrap'])
   .constant('spotifyIFrameId', 'spotify-player')
-  .constant('soundcloudConfig', new soundcloudSearcher.SoundCloudConfig('b45b1aa10f1ac2941910a7f0d10f8e28', 20))
+  .constant('soundcloudConfig', new soundcloudSearcher.SoundCloudConfig('bea3e36a337bd563d7ea12b7f6e20861', 20))
   .constant('youtubeConfig', new youtubeSearcher.YoutubeConfig('AIzaSyAxMPtoBR3TU4gZr2X0JgJo562UjGsIj3U'))
   .constant('SC', SC)
   .constant('SocketIOClientStatic', io)

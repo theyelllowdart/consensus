@@ -38,6 +38,7 @@ SC.initialize({
   client_id: 'bea3e36a337bd563d7ea12b7f6e20861',
   redirect_uri: 'html/callback.html'
 });
+soundManager.soundManager.beginDelayedInit();
 
 angular.module('consensus', ['ipCookie', 'mgcrea.ngStrap'])
   .constant('spotifyIFrameId', 'spotify-player')

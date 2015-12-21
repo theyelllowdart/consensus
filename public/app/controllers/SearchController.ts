@@ -1,7 +1,7 @@
 import models = require('../models/Models');
-import socket = require('../Services/Socket');
-import youtubeSearcher = require('../Services/Searcher/YouTubeSearcher');
-import syncedSearcher = require('../Services/Searcher/SyncSearcher');
+import socket = require('../services/Socket');
+import youtubeSearcher = require('../services/searcher/YouTubeSearcher');
+import syncedSearcher = require('../services/searcher/SyncSearcher');
 
 class SearchCtx {
   term:string;

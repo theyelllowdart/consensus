@@ -39,7 +39,6 @@ function reportError(error) {
 
 gulp.task('scripts', function () {
   return gulp.src('public/app/**/*.ts')
-    .pipe(gulpIf(!argv.production, sourceMaps.init()))
     .pipe(ts({sortOutput: true, module: 'amd'}))
     .pipe(gulp.dest('public/generated/js'));
 });
@@ -90,9 +89,8 @@ gulp.task('app', ['requirejs', 'css', 'server']);
 
 gulp.task("requireOptimize", ['scripts'], function (done) {
   return requirejs.optimize({
-    appDir: "public/generated/js",
-    baseUrl: "./",
-    dir: "public/generated/build",
+    baseUrl: "public/generated/js",
+    out: "public/generated/build/YouTubeIFrame.js",
     enforceDefine: true,
     paths: {
       jquery: "../../../bower_components/jquery/dist/jquery",
@@ -109,7 +107,6 @@ gulp.task("requireOptimize", ['scripts'], function (done) {
       soundcloudJavascript: "../../../bower_components/soundcloud-javascript/releases/sdk"
     },
     name: "YouTubeIFrame",
-    removeCombined: true,
     optimize: 'none',
     shim: {
       momentDurationFormat: {
@@ -132,7 +129,7 @@ gulp.task("requireOptimize", ['scripts'], function (done) {
   });
 });
 
-gulp.task("requirejs", ["requireOptimize"], function(){
+gulp.task("requirejs", ["requireOptimize"], function () {
   return gulp.src("bower_components/requirejs/require.js")
     .pipe(gulp.dest('public/generated/js'));
 });

@@ -12,27 +12,15 @@ class YTOnStateHandlerWrapper {
 
 export class YouTubePlayer implements player.Player {
   private youtubeProgressPromise:angular.IPromise<any>;
-  private ytPlayerPromise:angular.IPromise<YT.Player>;
   private ytWrapper:YTOnStateHandlerWrapper = new YTOnStateHandlerWrapper();
 
-  static $inject = ['playState', '$timeout', '$interval', 'syncedTime', '$q', '$window'];
+  static $inject = ['playState', '$timeout', '$interval', 'syncedTime', 'ytPlayerPromise'];
 
   constructor(private playState:player.PlayerState,
               private $timeout:angular.ITimeoutService,
               private $interval:angular.IIntervalService,
               private goTimeService:syncedTime.SyncedTime,
-              $q:angular.IQService, private $window:angular.IWindowService) {
-    var youtubeReadyDefer = $q.defer();
-    $window['onYouTubeIframeAPIReady'] = () => {
-      var ytPlayer = new YT.Player('youtube-player', {
-        events: {
-          onReady: () => {
-            youtubeReadyDefer.resolve(ytPlayer);
-          }
-        }
-      });
-    };
-    this.ytPlayerPromise = youtubeReadyDefer.promise;
+              private ytPlayerPromise:angular.IPromise<YT.Player>) {
     this.ytPlayerPromise.then((ytPlayer) => {
       ytPlayer.addEventListener('onStateChange', this.ytWrapper.call)
     });

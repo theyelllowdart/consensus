@@ -13,64 +13,78 @@
 /// <amd-dependency path="SoundManager" name="soundManager"/>
 /// <amd-dependency path="soundcloudJavascript"/>
 
-import socket = require('Services/Socket');
-import syncedTime = require('Services/SyncedTime');
+import socket = require('services/Socket');
+import syncedTime = require('services/SyncedTime');
 
-import player = require('Services/Player/Player');
-import soundcloudPlayer = require('Services/Player/SoundCloudPlayer');
-import spotifyPlayer = require('Services/Player/SpotifyPlayer');
-import timedPlayer = require('Services/Player/TimedPlayer');
-import youtubePlayer = require('Services/Player/YouTubePlayer');
+import player = require('services/player/Player');
+import soundcloudPlayer = require('services/player/SoundCloudPlayer');
+import spotifyPlayer = require('services/player/SpotifyPlayer');
+import timedPlayer = require('services/player/TimedPlayer');
+import youtubePlayer = require('services/player/YouTubePlayer');
 
-import soundcloudSearcher = require('Services/Searcher/SoundCloudSearcher');
-import spotifySearcher = require('Services/Searcher/SpotifySearcher');
-import syncSearcher = require('Services/Searcher/SyncSearcher');
-import youtubeSearcher = require('Services/Searcher/YouTubeSearcher');
+import soundcloudSearcher = require('services/searcher/SoundCloudSearcher');
+import spotifySearcher = require('services/searcher/SpotifySearcher');
+import syncSearcher = require('services/searcher/SyncSearcher');
+import youtubeSearcher = require('services/searcher/YouTubeSearcher');
 
-import queueController = require('Controllers/QueueController');
-import searchController = require('Controllers/SearchController');
+import queueController = require('controllers/QueueController');
+import searchController = require('controllers/SearchController');
 
 declare var io:SocketIOClientStatic;
 declare var soundManager:any;
 declare var moment:moment.MomentStatic;
 declare var SC:any;
+
 SC.initialize({
   client_id: 'bea3e36a337bd563d7ea12b7f6e20861',
   redirect_uri: 'html/callback.html'
 });
 soundManager.soundManager.beginDelayedInit();
 
-angular.module('consensus', ['ipCookie', 'mgcrea.ngStrap'])
-  .constant('spotifyIFrameId', 'spotify-player')
-  .constant('soundcloudConfig', new soundcloudSearcher.SoundCloudConfig('bea3e36a337bd563d7ea12b7f6e20861', 20))
-  .constant('youtubeConfig', new youtubeSearcher.YoutubeConfig('AIzaSyAxMPtoBR3TU4gZr2X0JgJo562UjGsIj3U'))
-  .constant('SC', SC)
-  .constant('SocketIOClientStatic', io)
-  .constant('soundManager', soundManager.soundManager)
-  .constant('moment', moment)
-  .value('playState', new player.PlayerState())
+angular.injector(['ng']).invoke(['$q', ($q:angular.IQService) => {
+  var youtubeReadyDefer = $q.defer();
+  (<any>window).onYouTubeIframeAPIReady = () => {
+    angular.element(document).ready(() => {
+      var ytPlayer = new YT.Player('youtube-player', {
+        events: {
+          onReady: () => {
+            youtubeReadyDefer.resolve(ytPlayer);
+          }
+        }
+      });
+    })
+  };
 
-  .service('socket', socket.Socket)
-  .service('syncedTime', syncedTime.SyncedTime)
+  angular.module('consensus', ['ipCookie', 'mgcrea.ngStrap'])
+    .constant('spotifyRemoteId', 'spotify-player')
+    .constant('soundcloudConfig', new soundcloudSearcher.SoundCloudConfig('bea3e36a337bd563d7ea12b7f6e20861', 20))
+    .constant('youtubeConfig', new youtubeSearcher.YoutubeConfig('AIzaSyAxMPtoBR3TU4gZr2X0JgJo562UjGsIj3U'))
+    .constant('SC', SC)
+    .constant('SocketIOClientStatic', io)
+    .constant('soundManager', soundManager.soundManager)
+    .constant('moment', moment)
+    .constant('playState', new player.PlayerState())
+    .constant('ytPlayerPromise', youtubeReadyDefer.promise)
 
-  .service('spotifySearcher', spotifySearcher.SpotifySearcher)
-  .service('syncedSpotifySearcher', syncSearcher.SyncedSpotifySearcher)
-  .service('youtubeSearcher', youtubeSearcher.YouTubeSearcher)
-  .service('syncedYouTubeSearcher', syncSearcher.SyncedYouTubeSearcher)
-  .service('soundcloudSearcher', soundcloudSearcher.SoundCloudSearcher)
-  .service('syncedSoundCloudSearcher', syncSearcher.SyncedSoundCloudSearcher)
+    .service('socket', socket.Socket)
+    .service('syncedTime', syncedTime.SyncedTime)
 
-  .service('spotifyPlayer', spotifyPlayer.SpotifyPlayer)
-  .service('youtubePlayer', youtubePlayer.YouTubePlayer)
-  .service('soundcloudPlayer', soundcloudPlayer.SoundCloudPlayer)
-  .service('timedPlayer', timedPlayer.TimedPlayer)
+    .service('spotifySearcher', spotifySearcher.SpotifySearcher)
+    .service('syncedSpotifySearcher', syncSearcher.SyncedSpotifySearcher)
+    .service('youtubeSearcher', youtubeSearcher.YouTubeSearcher)
+    .service('syncedYouTubeSearcher', syncSearcher.SyncedYouTubeSearcher)
+    .service('soundcloudSearcher', soundcloudSearcher.SoundCloudSearcher)
+    .service('syncedSoundCloudSearcher', syncSearcher.SyncedSoundCloudSearcher)
 
-  .controller('SearchController', searchController.SearchController)
-  .controller('QueueController', queueController.QueueController)
+    .service('spotifyPlayer', spotifyPlayer.SpotifyPlayer)
+    .service('youtubePlayer', youtubePlayer.YouTubePlayer)
+    .service('soundcloudPlayer', soundcloudPlayer.SoundCloudPlayer)
+    .service('timedPlayer', timedPlayer.TimedPlayer)
 
-  .filter('humanizeDuration', () => (input) => moment.duration(input)['format']('h:mm:ss'))
+    .controller('SearchController', searchController.SearchController)
+    .controller('QueueController', queueController.QueueController)
 
-  .config(['$locationProvider', ($locationProvider) => $locationProvider.html5Mode(true)]);
+    .filter('humanizeDuration', () => (input) => moment.duration(input)['format']('h:mm:ss'))
 
-angular.bootstrap(document, ['consensus']);
-$('body').show();
+    .config(['$locationProvider', ($locationProvider) => $locationProvider.html5Mode(true)]);
+}]);

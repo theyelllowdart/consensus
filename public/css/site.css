@@ -52,3 +52,7 @@ html, body, .container-fluid {
   color: black;
   font-size: 11px;
 }
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}

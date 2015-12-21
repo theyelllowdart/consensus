@@ -1,11 +1,11 @@
 import models = require('../models/Models');
-import socket = require('../Services/Socket');
-import syncedTime = require('../Services/SyncedTime');
-import player = require('../Services/Player/Player');
-import timedPlayer = require('../Services/Player/TimedPlayer');
-import youtubePlayer = require('../Services/Player/YouTubePlayer');
-import soundcloudPlayer = require('../Services/Player/SoundCloudPlayer');
-import spotifyPlayer = require('../Services/Player/SpotifyPlayer');
+import socket = require('../services/Socket');
+import syncedTime = require('../services/SyncedTime');
+import player = require('../services/player/Player');
+import timedPlayer = require('../services/player/TimedPlayer');
+import youtubePlayer = require('../services/player/YouTubePlayer');
+import soundcloudPlayer = require('../services/player/SoundCloudPlayer');
+import spotifyPlayer = require('../services/player/SpotifyPlayer');
 
 class ListenState {
   public listening:boolean = false;

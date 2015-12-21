@@ -1,22 +1,11 @@
-html {
-  min-height: 100%;
-  position: relative;
-}
-
-html, body, .container-fluid {
+body {
   font-size: 13px;
-  height: 100%;
 }
 
-.row-eq-height {
-  display: table;
-  height: 100%;
-}
-
-.row-eq-height > [class*="col-"] {
-  float: none;
-  display: table-cell;
-  vertical-align: top;
+#progress-bar {
+  background-color: #50C2E8;
+  height: 20px;
+  width: 0;
 }
 
 .search-result {
@@ -37,11 +26,6 @@ html, body, .container-fluid {
   height: 75px;
   width: 75px;
   margin-right: 5px;
-}
-
-
-#queue {
-  background-color: WhiteSmoke;
 }
 
 .deemphasize {

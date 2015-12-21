@@ -35,7 +35,7 @@ export class SoundCloudPlayer implements player.Player {
           },
           whileplaying: () => {
             this.$rootScope.$apply(()=> {
-              this.playState.progress = Math.floor((soundObject.position / duration) * 100);
+              this.playState.progress = Math.min(100, (soundObject.position / duration) * 100);
             });
           }
         });

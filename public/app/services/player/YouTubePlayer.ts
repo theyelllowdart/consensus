@@ -44,7 +44,7 @@ export class YouTubePlayer implements player.Player {
             event.target.seekTo(Math.abs(seek / 1000), true);
             event.target.playVideo();
             this.youtubeProgressPromise = this.$interval(() => {
-              this.playState.progress = Math.floor(ytPlayer.getCurrentTime() / ytPlayer.getDuration() * 100);
+              this.playState.progress = Math.min(100, ytPlayer.getCurrentTime() / ytPlayer.getDuration() * 100);
             }, 500)
           }), sleepDuration, false)
         } else if (event.data == YT.PlayerState.ENDED) {

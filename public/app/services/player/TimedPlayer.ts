@@ -20,8 +20,7 @@ export class TimedPlayer implements player.Player {
   public play(playCounter:number, url:string, start:number, duration:number):void {
     this.$timeout(() => {
       this.fakeProgressPromise = this.$interval(() => this.playState.ifCurrent(playCounter, () => {
-        var progressPercent = (this.syncedTime.now() - start) / duration;
-        this.playState.progress = Math.min(Math.floor(progressPercent * 100), 100);
+        this.playState.progress = Math.min(100, (this.syncedTime.now() - start) / duration * 100);
       }), 500);
     }, start - this.syncedTime.now(), false);
   }

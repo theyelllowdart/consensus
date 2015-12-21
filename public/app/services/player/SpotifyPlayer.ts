@@ -50,8 +50,7 @@ export class SpotifyPlayer implements player.Player {
         var evt = StandardsCustomEvent.get("spotifyRemote.play", {detail: uri + '#0:00'});
         this.spotifyRemoteElem.dispatchEvent(evt);
         this.spotifyProgressTimer = this.$interval(() => this.playState.ifCurrent(playCounter, () => {
-          var progressPercent = (this.syncedTime.now() - start) / duration;
-          this.playState.progress = Math.min(Math.floor(progressPercent * 100), 100);
+          this.playState.progress = Math.min(100, (this.syncedTime.now() - start) / duration * 100);
         }), 500)
       }), start - this.syncedTime.now(), false);
     });

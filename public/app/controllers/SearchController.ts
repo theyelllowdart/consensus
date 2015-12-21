@@ -4,7 +4,7 @@ import youtubeSearcher = require('../services/searcher/YouTubeSearcher');
 import syncedSearcher = require('../services/searcher/SyncSearcher');
 
 class SearchCtx {
-  term:string;
+  term:string = '';
 }
 
 export class SearchController {
@@ -96,21 +96,17 @@ export class SearchController {
         this.youtubeResults = [];
         this.spotifyResults = [];
       } else {
-        this.performSearch(newTerm);
+        this.soundcloudSearcher.search(newTerm).then((results:Array<soundcloud.Track>) => {
+          this.soundCloudResults = results;
+        });
+        this.youtubeSearcher.search(newTerm).then((results:Array<GoogleApiYouTubeSearchResource>) => {
+          this.youtubeResults = results;
+        });
+        this.spotifySearch.search(newTerm).then((results:Array<spotify.Track>) => {
+          this.spotifyResults = results
+        });
       }
     }
     return this.searchCtx.term;
-  }
-
-  private performSearch(newQuery:string) {
-    this.soundcloudSearcher.search(newQuery).then((results:Array<soundcloud.Track>) => {
-      if (this.searchCtx.term !== '') this.soundCloudResults = results;
-    });
-    this.youtubeSearcher.search(newQuery).then((results:Array<GoogleApiYouTubeSearchResource>) => {
-      if (this.searchCtx.term !== '') this.youtubeResults = results;
-    });
-    this.spotifySearch.search(newQuery).then((results:Array<spotify.Track>) => {
-      if (this.searchCtx.term !== '') this.spotifyResults = results
-    });
   }
 }

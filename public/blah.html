@@ -27,7 +27,7 @@
                  ng-model="searchCtrl.search"
                  ng-model-options="{getterSetter: true, updateOn: 'default', debounce: {'default': 200}}"/>
         </form>
-        <div id="results" class="row" ng-show="searchCtrl.search().length >= 0">
+        <div id="results" class="row" ng-show="searchCtrl.search().length > 0">
           <div id="soundcloud-results" class="col-xs-4">
             <h4>SoundCloud</h4>
 

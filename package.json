@@ -28,7 +28,7 @@
     "gulp-typescript": "^2.8.0",
     "gulp-uglify": "^1.1.0",
     "install": "^0.1.8",
-    "lodash": "^3.3.0",
+    "lodash": "^4.17.15",
     "node-uuid": "^1.4.3",
     "npm": "^2.14.0",
     "passport": "^0.2.1",

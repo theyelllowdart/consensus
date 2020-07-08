@@ -30,7 +30,7 @@
     "install": "^0.1.8",
     "lodash": "^3.3.0",
     "node-uuid": "^1.4.3",
-    "npm": "^2.14.0",
+    "npm": "^6.13.4",
     "passport": "^0.2.1",
     "passport-google-oauth": "^0.1.5",
     "passport-local": "^1.0.0",
